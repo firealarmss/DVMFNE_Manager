@@ -1,0 +1,4 @@
+servers:
+  - name: "Centrunk FNE2"
+    ServerPort: 3000
+    ServerBindAddress: 0.0.0.0
