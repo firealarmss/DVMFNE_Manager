@@ -3,6 +3,11 @@
 <%- include('partials/head.ejs') %>
 
 <body>
+
+<script>
+    const groups = <%- JSON.stringify(rules) %>;
+</script>
+
 <div class="container mt-5">
     <h1><%=name%> TG Rule Manager</h1>
     <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addTalkGroupModal">
@@ -18,7 +23,18 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label>Network Name:</label>
+                        <select class="form-control" id="newTgNetworkName">
+
+                            <% rules.forEach(function(group, index) { %>
+
+                                <option value="<%= index %>"><%= group.name %></option>
+                            <% }); %>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Name:</label>
                         <input type="text" class="form-control" id="newTgName" />
@@ -73,7 +89,7 @@
         </div>
     </div>
     <% rules.forEach(function(group, index) { %>
-        <div class="group mb-3 p-3 border rounded bg-light">
+        <div class="group mb-3 p-3 border rounded bg-light" data-group-index="<%= index %>">
             <div class="form-group">
                 <label>Group Name:</label>
                 <input type="text" class="form-control group-name" value="<%= group.name %>" data-group-index="<%= index %>" />
@@ -93,9 +109,8 @@
 
             <div class="voice-groups">
                 <% group.groupVoice.forEach(function(voiceGroup, vIndex) { %>
-                    <div class="voice-group p-3 rounded">
+                    <div class="voice-group p-3 rounded" data-group-index="<%= index %>" data-voice-index="<%= vIndex %>">
                         <h5 class="voice-group-header">Talk Group <%= vIndex + 1 %></h5>
-
                         <div class="form-group">
                             <label>Name:</label>
                             <input type="text" class="form-control voice-group-name" value="<%= voiceGroup.name %>" data-group-index="<%= index %>" data-voice-index="<%= vIndex %>" />
@@ -166,12 +181,6 @@
     <% }); %>
     <button class="btn btn-primary" onclick="saveChanges()">Save Changes</button>
 </div>
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script src="/public/js/routingRuleUtils.js" type="application/javascript"></script>
 

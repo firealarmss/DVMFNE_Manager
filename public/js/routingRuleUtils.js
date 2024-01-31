@@ -1,10 +1,20 @@
-const groups = [];
+/**
+ * This file is part of the fne2 tg manager project.
+ *
+ * (c) 2024 Caleb <ko4uyj@gmail.com>
+ *
+ * For the full copyright and license information, see the
+ * LICENSE file that was distributed with this source code.
+ */
 
 function addNewTalkGroup() {
     const newTgName = document.getElementById('newTgName').value;
     const newTgActive = document.getElementById('newTgActive').value === 'true';
     const newTgAffiliated = document.getElementById('newTgAffiliated').value === 'true';
     const newTgRoutable = document.getElementById('newTgRoutable').value === 'true';
+
+    const selectedGroupIndex = parseInt(document.getElementById('newTgNetworkName').value, 10);
+    const selectedGroup = groups[selectedGroupIndex];
 
     const newTalkGroup = {
         name: newTgName,
@@ -25,61 +35,135 @@ function addNewTalkGroup() {
         }]
     };
 
-    groups.push(newTalkGroup);
+    selectedGroup.groupVoice.push(newTalkGroup);
 
-    addTalkGroupToUI(newTalkGroup, groups.length - 1);
+    addTalkGroupToUI(newTalkGroup, selectedGroupIndex, selectedGroup.groupVoice.length - 1);
 
     $('#addTalkGroupModal').modal('hide');
-
-    document.getElementById('newTgName').value = '';
 }
 
-function addTalkGroupToUI(newTalkGroup, index) {
-    const groupDiv = document.createElement('div');
-    groupDiv.className = 'group mb-3 p-3 border rounded bg-light';
-    groupDiv.innerHTML = `
+function addTalkGroupToUI(newTalkGroup, groupIndex, voiceIndex) {
+    const voiceGroupsContainer = document.querySelector(`.group[data-group-index="${groupIndex}"] .voice-groups`);
+
+    if (!voiceGroupsContainer) {
+        console.error('Voice groups container not found');
+        return;
+    }
+
+    const talkGroupDiv = document.createElement('div');
+    talkGroupDiv.className = 'voice-group p-3 rounded';
+    talkGroupDiv.setAttribute('data-voice-index', voiceIndex);
+    talkGroupDiv.setAttribute('data-group-index', groupIndex);
+
+    talkGroupDiv.innerHTML = `
+        <h5 class="voice-group-header">Talk Group Name: ${newTalkGroup.name}</h5>
         <div class="form-group">
-            <label>Group Name:</label>
-            <input type="text" class="form-control group-name" value="${newTalkGroup.name}" data-group-index="${index}" />
+            <label>Name:</label>
+            <input type="text" class="form-control voice-group-name" value="${newTalkGroup.name}" />
         </div>
-        <div class="voice-groups">
+
+        <div class="form-group">
+            <label>Active:</label>
+            <select class="form-control voice-group-active">
+                <option value="true" ${newTalkGroup.config.active ? 'selected' : ''}>True</option>
+                <option value="false" ${!newTalkGroup.config.active ? 'selected' : ''}>False</option>
+            </select>
+        </div>
+    
+        <div class="form-group">
+            <label>Affiliated:</label>
+            <select class="form-control voice-group-affiliated">
+                <option value="true" ${newTalkGroup.config.affiliated ? 'selected' : ''}>True</option>
+                <option value="false" ${!newTalkGroup.config.affiliated ? 'selected' : ''}>False</option>
+            </select>
+        </div>
+    
+        <div class="form-group">
+            <label>Routable:</label>
+            <select class="form-control voice-group-routable">
+                <option value="true" ${newTalkGroup.config.routable ? 'selected' : ''}>True</option>
+                <option value="false" ${!newTalkGroup.config.routable ? 'selected' : ''}>False</option>
+            </select>
+        </div>
+    
+        <div class="form-group">
+            <label>Source TGID:</label>
+            <input type="number" class="form-control voice-group-source-tgid" value="${newTalkGroup.source.tgid}" />
+        </div>
+    
+        <div class="form-group">
+            <label>Source Slot:</label>
+            <input type="number" class="form-control voice-group-source-slot" value="${newTalkGroup.source.slot}" />
+        </div>
+    
+        <div class="destination-group">
+            <div class="form-group">
+                <label>Destination Network:</label>
+                <input type="text" class="form-control voice-group-destination-network" value="${newTalkGroup.destination[0].network}" />
+            </div>
+            <div class="form-group">
+                <label>Destination TGID:</label>
+                <input type="number" class="form-control voice-group-destination-tgid" value="${newTalkGroup.destination[0].tgid}" />
+            </div>
+            <div class="form-group">
+                <label>Destination Slot:</label>
+                <input type="number" class="form-control voice-group-destination-slot" value="${newTalkGroup.destination[0].slot}" />
+            </div>
         </div>
     `;
-    document.querySelector('.container').appendChild(groupDiv);
+
+    voiceGroupsContainer.appendChild(talkGroupDiv);
 }
 
-function saveChanges() {
 
-    document.querySelectorAll('.group').forEach(groupElem => {
-        const index = groupElem.querySelector('.group-name').getAttribute('data-group-index');
+function saveChanges() {
+    groups.length = 0;
+
+    document.querySelectorAll('.group').forEach((groupElem, groupIndex) => {
+        const groupNameInput = groupElem.querySelector('.group-name');
+        if (!groupNameInput) {
+            console.error(`Group name input not found at index: ${groupIndex}`);
+            return;
+        }
+        const index = groupNameInput.getAttribute('data-group-index');
         const group = {
-            name: groupElem.querySelector('.group-name').value,
-            groupHangTime: parseInt(groupElem.querySelector('.group-hang-time').value, 10),
-            master: groupElem.querySelector('.group-master').value === 'true',
-            sendTgid: groupElem.querySelector('.group-send-tgid').value === 'true',
+            name: groupNameInput ? groupNameInput.value : '',
+            groupHangTime: parseInt(groupElem.querySelector('.group-hang-time')?.value, 10),
+            master: groupElem.querySelector('.group-master')?.value === 'true',
+            sendTgid: groupElem.querySelector('.group-send-tgid')?.value === 'true',
             groupVoice: []
         };
 
-        groupElem.querySelectorAll('.voice-group').forEach(voiceElem => {
-            const vIndex = voiceElem.querySelector('.voice-group-name').getAttribute('data-voice-index');
+        groupElem.querySelectorAll('.voice-group').forEach((voiceElem, voiceIndex) => {
+            const voiceGroupNameInput = voiceElem.querySelector('.voice-group-name');
+            if (!voiceGroupNameInput) {
+                console.error(`Voice group name input not found for voice group at index: ${voiceIndex} in group: ${groupIndex}`);
+                return;
+            }
             const voiceGroup = {
-                name: voiceElem.querySelector('.voice-group-name').value,
+                name: voiceGroupNameInput ? voiceGroupNameInput.value : '',
                 config: {
-                    active: voiceElem.querySelector('.voice-group-active').value === 'true',
-                    affiliated: voiceElem.querySelector('.voice-group-affiliated').value === 'true',
-                    routable: voiceElem.querySelector('.voice-group-routable').value === 'true',
+                    active: voiceElem.querySelector('.voice-group-active')?.value === 'true',
+                    affiliated: voiceElem.querySelector('.voice-group-affiliated')?.value === 'true',
+                    routable: voiceElem.querySelector('.voice-group-routable')?.value === 'true',
                     ignored: Array.from(voiceElem.querySelectorAll('.voice-group-ignored')).map(input => parseInt(input.value, 10))
                 },
-                destination: Array.from(voiceElem.querySelectorAll('.destination-group')).map(destElem => ({
-                    network: destElem.querySelector('.voice-group-destination-network').value,
-                    tgid: parseInt(destElem.querySelector('.voice-group-destination-tgid').value, 10),
-                    slot: parseInt(destElem.querySelector('.voice-group-destination-slot').value, 10) || 1
-                })),
+                destination: [],
                 source: {
-                    tgid: parseInt(voiceElem.querySelector('.voice-group-source-tgid').value, 10),
-                    slot: parseInt(voiceElem.querySelector('.voice-group-source-slot').value, 10)
-                },
+                    tgid: parseInt(voiceElem.querySelector('.voice-group-source-tgid')?.value, 10),
+                    slot: parseInt(voiceElem.querySelector('.voice-group-source-slot')?.value, 10)
+                }
             };
+
+            voiceElem.querySelectorAll('.destination-group').forEach(destGroupElem => {
+                const destination = {
+                    network: destGroupElem.querySelector('.voice-group-destination-network')?.value,
+                    tgid: parseInt(destGroupElem.querySelector('.voice-group-destination-tgid')?.value, 10),
+                    slot: parseInt(destGroupElem.querySelector('.voice-group-destination-slot')?.value, 10)
+                };
+                voiceGroup.destination.push(destination);
+            });
+
             group.groupVoice.push(voiceGroup);
         });
 
