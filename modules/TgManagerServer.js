@@ -26,6 +26,7 @@ class TgManagerServer {
 
         this.app.set('view engine', 'ejs');
         this.app.set('views', path.join(__dirname, '..', 'views'));
+        this.app.use('/public', express.static('public'))
 
         this.app.use(express.json());
         this.app.use(bodyParser.json());
