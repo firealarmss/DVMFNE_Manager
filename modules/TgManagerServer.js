@@ -50,6 +50,7 @@ class TgManagerServer {
             } else {
                 res.locals.user = null;
             }
+            res.locals.name = this.name;
             next();
         });
 
