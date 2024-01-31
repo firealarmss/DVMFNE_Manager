@@ -2,6 +2,11 @@
 configs/*
 !configs/config.example.yml
 
+#tests
+
+tests/*
+tests
+
 # Logs
 logs
 *.log
