@@ -17,7 +17,6 @@ const FneCommunications = require('./FneCommunications');
 
 class TgManagerServer {
     constructor(server, config) {
-        server.ServerPort = undefined;
 
         this.config = config;
         this.server = server;
