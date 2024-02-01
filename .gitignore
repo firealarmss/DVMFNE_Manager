@@ -2,6 +2,8 @@
 configs/*
 !configs/config.example.yml
 
+db/*.db
+
 #tests
 
 tests/*
