@@ -36,7 +36,7 @@ if (argv.config) {
     }
 
     config.servers.forEach((server) => {
-       let app = new  TgManagerServer(server);
+       let app = new  TgManagerServer(server, config);
        app.start();
     });
 
