@@ -13,20 +13,23 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const TgRulesHandler = require('./TgRulesHandler.js');
 const DbManager = require('./DbManager');
+const FneCommunications = require('./FneCommunications');
 
 class TgManagerServer {
-    constructor(config) {
-        config.ServerPort = undefined;
+    constructor(server, config) {
+        server.ServerPort = undefined;
 
         this.config = config;
+        this.server = server;
+
         this.app = express();
 
         this.dbManager = new DbManager("./db/users.db");
 
-        this.port = config.ServerPort || 3000;
-        this.name = config.name;
-        this.ServerBindAddress = config.ServerBindAddress || "0.0.0.0";
-        this.RulePath = config.RulePath;
+        this.port = server.ServerPort || 3000;
+        this.name = server.name;
+        this.ServerBindAddress = server.ServerBindAddress || "0.0.0.0";
+        this.RulePath = server.RulePath;
 
         this.app.set('view engine', 'ejs');
         this.app.set('views', path.join(__dirname, '..', 'views'));
@@ -57,7 +60,83 @@ class TgManagerServer {
         this.dbManager.initialize();
 
         this.app.get('/', (req, res) => {
-            res.render('index');
+            res.render('system_landing');
+        });
+
+        this.app.get('/overview', (req, res) => {
+            res.render('overview', { config: this.config });
+        });
+
+        this.app.get('/restartFne', this.isAuthenticated, (req, res) => {
+            let fneCommunications = new FneCommunications(this.server);
+
+            fneCommunications.restartFneService()
+                .then(status => {
+                    if (status) {
+                        res.send("Success!")
+                        console.log(status);
+                    } else {
+                        res.send("Fail");
+                    }
+                })
+                .catch(status => {
+                    res.send("error");
+                    console.log(status);
+                });
+        });
+
+        this.app.get('/startFne', this.isAuthenticated, (req, res) => {
+            let fneCommunications = new FneCommunications(this.server);
+
+            fneCommunications.startFneService()
+                .then(status => {
+                    if (status) {
+                        res.send("Success!")
+                        console.log(status);
+                    } else {
+                        res.send("Fail");
+                    }
+                })
+                .catch(status => {
+                    res.send("error");
+                    console.log(status);
+                });
+        });
+
+        this.app.get('/stopFne', this.isAuthenticated, (req, res) => {
+            let fneCommunications = new FneCommunications(this.server);
+
+            fneCommunications.stopFneService()
+                .then(status => {
+                    if (status) {
+                        res.send("Success!")
+                        console.log(status);
+                    } else {
+                        res.send("Fail");
+                    }
+                })
+                .catch(status => {
+                    res.send("error");
+                    console.log(status);
+                });
+        });
+
+        this.app.get('/fneStatus', this.isAuthenticated, (req, res) => {
+            let fneCommunications = new FneCommunications(this.server);
+
+            fneCommunications.getFneServiceStatus()
+                .then(status => {
+                    if (status) {
+                        res.send(fneCommunications.commandOutput);
+                        console.log(status);
+                    } else {
+                        res.send("Fail");
+                    }
+                })
+                .catch(status => {
+                    res.send("error");
+                    console.log(status);
+                });
         });
 
         this.app.get('/tg_rules', this.isAuthenticated, (req, res) => {

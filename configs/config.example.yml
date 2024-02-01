@@ -1,4 +1,14 @@
 servers:
-  - name: "Centrunk FNE2"
-    ServerPort: 3000
+  - name: "Centrunk"
+
+    ServerPort: 3001
     ServerBindAddress: 0.0.0.0
+
+    RulePath: "./tests/routing_rules.yml"
+    ConfigPath: "./tests/router_config.yml"
+
+    # I would love for these to not be needed, but only way to do it right now
+    StartCommand: "sudo systemctl start fne2.service"
+    StopCommand: "sudo systemctl stop fne2.service"
+    RestartCommand: "sudo systemctl restart fne2.service"
+    StatusCommand: "sudo systemctl status fne2.service"

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron mt-5">
+        <h1 class="display-4"><%=name%> FNE2 TG Manager</h1>
+        <p class="lead">Simple TG file editor</p>
+        <hr class="my-4">
+        <% config.servers.forEach((server)=>{%>
+            <a class="btn btn-primary btn-lg" href="http://<%=server.ServerBindAddress%>:<%=server.ServerPort%>/" role="button"><%=server.name%></a>
+        <%})%>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
