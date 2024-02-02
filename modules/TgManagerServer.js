@@ -77,15 +77,15 @@ class TgManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
-                        this.logger.debug("Restart FNE request", "MANAGER SERVER");
-                        this.logger.debug(status, "MANAGER SERVER");
+                        this.logger.dbug("Restart FNE request", "MANAGER SERVER");
+                        this.logger.dbug(status, "MANAGER SERVER");
                     } else {
                         res.send("Fail");
                     }
                 })
                 .catch(status => {
                     res.send("error");
-                    this.logger.debug(status, "MANAGER SERVER");
+                    this.logger.dbug(status, "MANAGER SERVER");
                 });
         });
 
@@ -96,7 +96,7 @@ class TgManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
-                        this.logger.debug("Start FNE request", "MANAGER SERVER");
+                        this.logger.dbug("Start FNE request", "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -115,7 +115,7 @@ class TgManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
-                        this.logger.debug("Stop FNE request", "MANAGER SERVER");
+                        this.logger.dbug("Stop FNE request", "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -134,7 +134,7 @@ class TgManagerServer {
                 .then(status => {
                     if (status) {
                         res.send(fneCommunications.commandOutput);
-                        this.logger.debug("FNE Status: " + fneCommunications.commandOutput, "MANAGER SERVER");
+                        this.logger.dbug("FNE Status: " + fneCommunications.commandOutput, "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -176,11 +176,11 @@ class TgManagerServer {
             this.dbManager.validateUser(username, password, (err, user) => {
                 if (user) {
                     req.session.user = user;
-                    this.logger.info(`Auth Request granted; User: ${user}`, "MANAGER SERVER");
+                    this.logger.info(`Auth Request granted; User: ${user.username}`, "MANAGER SERVER");
 
                     res.redirect('/');
                 } else {
-                    this.logger.info(`Auth Request failed; User: ${user}`, "MANAGER SERVER");
+                    this.logger.info(`Auth Request failed; User: ${username}`, "MANAGER SERVER");
 
                     res.render('login', { message: 'Invalid username or password' });
                 }

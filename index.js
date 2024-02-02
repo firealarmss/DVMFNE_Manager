@@ -28,22 +28,20 @@ let config = {
     servers: undefined
 };
 
-let logger;
-
 if (argv.config) {
     try {
         const configFileContents = fs.readFileSync(argv.config, 'utf8');
         config = yaml.load(configFileContents);
-
-        logger = new Logger(argv.debug, this.name, null, 0);
     } catch (e) {
         console.error("Error reading config file: \n" + e);
         process.exit(1);
     }
 
     config.servers.forEach((server) => {
-       let app = new  TgManagerServer(server, config, logger);
-       app.start();
+        let logger = new Logger(config.debug, server.name, null, 0);
+        let app = new  TgManagerServer(server, config, logger);
+
+        app.start();
     });
 
 } else {

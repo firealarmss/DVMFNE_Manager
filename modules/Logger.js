@@ -19,27 +19,27 @@ class Logger {
 
     error(message, location = null) {
         const locationPart = location ? `[${location}] ` : '';
-        console.error(`[${this.getDateTime()}] [ERROR] ${locationPart}${message}`);
-        this.writeLogFile(`[${this.getDateTime()}] [ERROR] ${locationPart}${message}`);
+        console.error(`[${this.getDateTime()}] [ERROR] [${this.systemName}] ${locationPart}${message}`);
+        this.writeLogFile(`[${this.getDateTime()}] [ERROR] [${this.systemName}] ${locationPart}${message}`);
     }
 
     warn(message, location = null) {
         const locationPart = location ? `[${location}] ` : '';
-        console.log(`[${this.getDateTime()}] [INFO] ${locationPart}${message}`);
-        this.writeLogFile(`[${this.getDateTime()}] [INFO] ${locationPart}${message}`);
+        console.log(`[${this.getDateTime()}] [INFO] [${this.systemName}] ${locationPart}${message}`);
+        this.writeLogFile(`[${this.getDateTime()}] [INFO] [${this.systemName}] ${locationPart}${message}`);
     }
 
     info(message, location = null) {
         const locationPart = location ? `[${location}] ` : '';
-        console.log(`[${this.getDateTime()}] [INFO] ${locationPart}${message}`);
-        this.writeLogFile(`[${this.getDateTime()}] [INFO] ${locationPart}${message}`);
+        console.log(`[${this.getDateTime()}] [INFO] [${this.systemName}] ${locationPart}${message}`);
+        this.writeLogFile(`[${this.getDateTime()}] [INFO] [${this.systemName}] ${locationPart}${message}`);
     }
 
-    debug(message, location = null) {
+    dbug(message, location = null) {
         if (this.debug) {
             const locationPart = location ? `[${location}] ` : '';
-            console.log(`[${this.getDateTime()}] [DEBUG] ${locationPart}${message}`);
-            this.writeLogFile(`[${this.getDateTime()}] [DEBUG] ${locationPart}${message}`);
+            console.log(`[${this.getDateTime()}] [DEBUG] [${this.systemName}] ${locationPart}${message}`);
+            this.writeLogFile(`[${this.getDateTime()}] [DEBUG] [${this.systemName}] ${locationPart}${message}`);
         }
     }
 
