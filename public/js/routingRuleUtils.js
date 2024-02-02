@@ -7,6 +7,26 @@
  * LICENSE file that was distributed with this source code.
  */
 
+function deleteTalkGroup(groupIndex, voiceIndex) {
+    if (!confirm('Are you sure you want to delete this talkgroup?')) {
+        return;
+    }
+
+    const group = groups[groupIndex];
+    if (group && group.groupVoice && group.groupVoice.length > voiceIndex) {
+        group.groupVoice.splice(voiceIndex, 1);
+    }
+
+    const voiceGroupDiv = document.querySelector(`.group[data-group-index="${groupIndex}"] .voice-group[data-voice-index="${voiceIndex}"]`);
+    if (voiceGroupDiv) {
+        voiceGroupDiv.remove();
+    }
+
+    document.querySelectorAll(`.group[data-group-index="${groupIndex}"] .voice-group`).forEach((elem, idx) => {
+        elem.setAttribute('data-voice-index', idx);
+    });
+}
+
 function addNewTalkGroup() {
     const newTgName = document.getElementById('newTgName').value;
     const newTgActive = document.getElementById('newTgActive').value === 'true';
