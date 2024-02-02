@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/public/css/routing.css">
+    <%- include('partials/head.ejs') %>
+</head>
+<body>
+
+<script>
+    const groups = <%- JSON.stringify(rules) %>;
+</script>
+
+<div class="container mt-5">
+    <h1>CFNE TG Rule Manager</h1>
+    <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addTalkGroupModal">
+        Add Talk Group
+    </button>
+
+    <div class="modal fade" id="addTalkGroupModal" tabindex="-1" role="dialog" aria-labelledby="addTalkGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTalkGroupModalLabel">Add New Talk Group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="newTgName">Name:</label>
+                        <input type="text" class="form-control" id="newTgName" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="newTgActive">Active:</label>
+                        <select class="form-control" id="newTgActive">
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newTgSourceTgid">Source TGID:</label>
+                        <input type="number" class="form-control" id="newTgSourceTgid" placeholder="Enter Source TGID">
+                    </div>
+                    <div class="form-group">
+                        <label for="newTgSourceSlot">Source Slot:</label>
+                        <input type="number" class="form-control" id="newTgSourceSlot" placeholder="Enter Source Slot">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="addNewTalkGroup()">Add Talk Group</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="talkGroupsContainer">
+        <% groups.groupVoice.forEach(function(group, index) { %>
+            <div class="group mb-3 p-3 border rounded bg-light" data-group-index="<%= index %>">
+                <div>
+                    <label for="group-name-<%= index %>">Name:</label>
+                    <input type="text" id="group-name-<%= index %>" class="form-control" value="<%= group.name %>">
+                </div>
+                <div>
+                    <label for="group-active-<%= index %>">Active:</label>
+                    <select id="group-active-<%= index %>" class="form-control">
+                        <option value="true" <%= group.config.active ? 'selected' : '' %>>True</option>
+                        <option value="false" <%= !group.config.active ? 'selected' : '' %>>False</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="group-inclusion-<%= index %>">Inclusions:</label>
+                    <input type="text" class="form-control group-inclusion" id="group-inclusion-<%= index %>" value="<%= group.config.inclusion.join(', ') %>" placeholder="Enter inclusions separated by commas"/>
+                </div>
+
+<!--                <div class="inclusion-group" data-group-index="<%= index %>">
+                    <% group.config.inclusion.forEach(function(inclusionId, iIndex) { %>
+                        <input type="text" class="form-control inclusion-id" value="<%= inclusionId %>" data-inclusion-index="<%= iIndex %>">
+                    <% }); %>
+                    <button type="button" class="btn btn-info" onclick="addInclusion(<%= index %>)">Add Inclusion</button>
+                </div>-->
+
+                <div>
+                    <label for="group-exclusion-<%= index %>">Exclusions:</label>
+                    <input type="text" class="form-control group-exclusion" id="group-exclusion-<%= index %>" value="<%= group.config.exclusion.join(', ') %>" placeholder="Enter exclusions separated by commas"/>
+                </div>
+<!--
+                <div class="exclusion-group" data-group-index="<%= index %>">
+                    <% group.config.inclusion.forEach(function(exclusionId, eIndex) { %>
+                        <input type="text" class="form-control exclusion-id" value="<%= exclusionId %>" data-exclusion-index="<%= eIndex %>">
+                    <% }); %>
+                    <button type="button" class="btn btn-info" onclick="addExclusion(<%= index %>)">Add Exclusion</button>
+                </div>-->
+
+                <div>
+                    <h4>Rewrites:</h4>
+                    <% group.config.rewrite.forEach(function(rewrite, rIndex) { %>
+                        <div class="rewrite-group" data-rewrite-index="<%= rIndex %>">
+                            <label>Peer ID:</label>
+                            <input type="number" class="form-control" value="<%= rewrite.peerid %>">
+                            <label>TGID:</label>
+                            <input type="number" class="form-control" value="<%= rewrite.tgid %>">
+                            <label>Slot:</label>
+                            <input type="number" class="form-control" value="<%= rewrite.slot %>">
+                        </div>
+                    <% }); %>
+                    <button type="button" class="btn btn-info" onclick="addRewrite(<%= index %>)">Add Rewrite</button>
+                </div>
+                <div>
+                    <h4>Source:</h4>
+                    <label for="group-source-tgid-<%= index %>">TGID:</label>
+                    <input type="number" id="group-source-tgid-<%= index %>" class="form-control" value="<%= group.source.tgid %>">
+                    <label for="group-source-slot-<%= index %>">Slot:</label>
+                    <input type="number" id="group-source-slot-<%= index %>" class="form-control" value="<%= group.source.slot %>">
+                </div>
+            </div>
+        <% }); %>
+    </div>
+    <button class="btn btn-primary" onclick="saveChanges()">Save Changes</button>
+</div>
+
+
+<script src="/public/js/cfneRulesUtils.js"></script>
+
+</body>
+</html>

@@ -30,6 +30,7 @@ class TgManagerServer {
 
         this.port = server.ServerPort || 3000;
         this.name = server.name;
+        this.type = server.type;
         this.ServerBindAddress = server.ServerBindAddress || "0.0.0.0";
         this.RulePath = server.RulePath;
 
@@ -150,11 +151,21 @@ class TgManagerServer {
             let tgRulesHandler = new TgRulesHandler(this.RulePath, this.logger);
 
             tgRulesHandler.read();
-
-            res.render('tg_rules', {
-                rules: tgRulesHandler.rules,
-                name: this.name
-            });
+            //console.log(tgRulesHandler.rules);
+            if (this.type === "FNE2") {
+                res.render('tg_rules', {
+                    rules: tgRulesHandler.rules,
+                    name: this.name
+                });
+            } else if (this.type === "CFNE") {
+                res.render('cfne_rules', {
+                    rules: tgRulesHandler.rules,
+                    groups: tgRulesHandler.rules,
+                    name: this.name
+                });
+            } else {
+                res.send("Invalid FNE type");
+            }
         });
 
         this.app.post('/auth', (req, res) => {
