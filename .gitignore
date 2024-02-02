@@ -3,6 +3,7 @@ configs/*
 !configs/config.example.yml
 
 db/*.db
+!db/.gitkeep
 
 .idea
 .idea/*
