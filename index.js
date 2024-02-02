@@ -26,6 +26,8 @@ const argv = yargs
 let config = {
     servers: undefined
 };
+
+
 if (argv.config) {
     try {
         const configFileContents = fs.readFileSync(argv.config, 'utf8');

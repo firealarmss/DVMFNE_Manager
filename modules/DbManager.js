@@ -11,12 +11,14 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 
 class DbManager {
-    constructor(dbFilePath) {
+    constructor(dbFilePath, logger) {
+        this.logger = logger;
+
         this.db = new sqlite3.Database(dbFilePath, (err) => {
             if (err) {
-                console.log('Could not connect to database', err);
+                this.logger.error('Could not connect to database' + err, "DB MANAGER");
             } else {
-                console.log('Connected to database');
+                this.logger.info('Connected to database', "DB MANAGER");
             }
         });
     }
@@ -28,7 +30,7 @@ class DbManager {
         password TEXT
     )`, (err) => {
             if (err) {
-                console.log('Error creating the table:', err);
+                this.logger.error('Error creating the table:' + err, "DB MANAGER");
             } else {
                 this.db.get(`SELECT COUNT(*) as count FROM users`, [], (err, row) => {
                     if (row && row.count === 0) {
@@ -36,9 +38,9 @@ class DbManager {
                         const hash = bcrypt.hashSync('password', 8);
                         this.db.run(`INSERT INTO users (username, password) VALUES (?, ?)`, ['admin', hash], (err) => {
                             if (err) {
-                                console.log('Error creating Default admin user:', err);
+                                this.logger.error('Error creating Default admin user:' + err, "DB MANAGER");
                             } else {
-                                console.log('Default admin user created');
+                                this.logger.info('Default admin user created', "DB MANAGER");
                             }
                         });
                     }

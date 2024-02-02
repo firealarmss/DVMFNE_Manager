@@ -11,8 +11,9 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 
 class TgRulesHandler {
-    constructor(ruleFilePath) {
+    constructor(ruleFilePath, logger) {
         this.ruleFilePath = ruleFilePath;
+        this.logger = logger;
     }
 
     read(){

@@ -53,7 +53,6 @@ bin/
 bin/*
 bin/**
 
-
 # Dependency directories
 node_modules/
 jspm_packages/

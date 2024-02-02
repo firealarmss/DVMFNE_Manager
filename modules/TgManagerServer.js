@@ -14,6 +14,7 @@ const path = require('path');
 const TgRulesHandler = require('./TgRulesHandler.js');
 const DbManager = require('./DbManager');
 const FneCommunications = require('./FneCommunications');
+const Logger = require('./Logger');
 
 class TgManagerServer {
     constructor(server, config) {
@@ -23,7 +24,9 @@ class TgManagerServer {
 
         this.app = express();
 
-        this.dbManager = new DbManager("./db/users.db");
+        this.logger = new Logger(true, this.name, null, 0);
+
+        this.dbManager = new DbManager("./db/users.db", this.logger);
 
         this.port = server.ServerPort || 3000;
         this.name = server.name;
@@ -67,25 +70,25 @@ class TgManagerServer {
         });
 
         this.app.get('/restartFne', this.isAuthenticated, (req, res) => {
-            let fneCommunications = new FneCommunications(this.server);
+            let fneCommunications = new FneCommunications(this.server, this.logger);
 
             fneCommunications.restartFneService()
                 .then(status => {
                     if (status) {
                         res.send("Success!")
-                        console.log(status);
+                        this.logger.debug(status, "MANAGER SERVER");
                     } else {
                         res.send("Fail");
                     }
                 })
                 .catch(status => {
                     res.send("error");
-                    console.log(status);
+                    this.logger.debug(status, "MANAGER SERVER");
                 });
         });
 
         this.app.get('/startFne', this.isAuthenticated, (req, res) => {
-            let fneCommunications = new FneCommunications(this.server);
+            let fneCommunications = new FneCommunications(this.server, this.logger);
 
             fneCommunications.startFneService()
                 .then(status => {
@@ -103,7 +106,7 @@ class TgManagerServer {
         });
 
         this.app.get('/stopFne', this.isAuthenticated, (req, res) => {
-            let fneCommunications = new FneCommunications(this.server);
+            let fneCommunications = new FneCommunications(this.server, this.logger);
 
             fneCommunications.stopFneService()
                 .then(status => {
@@ -121,7 +124,7 @@ class TgManagerServer {
         });
 
         this.app.get('/fneStatus', this.isAuthenticated, (req, res) => {
-            let fneCommunications = new FneCommunications(this.server);
+            let fneCommunications = new FneCommunications(this.server, this.logger);
 
             fneCommunications.getFneServiceStatus()
                 .then(status => {
@@ -139,7 +142,7 @@ class TgManagerServer {
         });
 
         this.app.get('/tg_rules', this.isAuthenticated, (req, res) => {
-            let tgRulesHandler = new TgRulesHandler(this.RulePath);
+            let tgRulesHandler = new TgRulesHandler(this.RulePath, this.logger);
             tgRulesHandler.read();
             //console.log(JSON.stringify(tgRulesHandler.rules));
 
@@ -223,7 +226,7 @@ class TgManagerServer {
 
         this.app.post('/writeTgRuleChanges', this.isAuthenticated, (req, res) => {
             let rules = req.body;
-            let tgRulesHandler = new TgRulesHandler(this.RulePath);
+            let tgRulesHandler = new TgRulesHandler(this.RulePath, this.logger);
 
             tgRulesHandler.write(rules);
 
@@ -234,7 +237,7 @@ class TgManagerServer {
 
     start() {
         this.app.listen(this.port, this.ServerBindAddress, () => {
-            console.log(`${this.name} TG Manager Server started on port ${this.port}`);
+            this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
         });
     }
 
