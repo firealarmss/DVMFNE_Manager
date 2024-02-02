@@ -1,4 +1,5 @@
 debug: false
+LogPath: "./logs/tg_manager.log"
 
 servers:
   - name: "Centrunk"

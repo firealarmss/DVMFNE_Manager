@@ -38,7 +38,7 @@ if (argv.config) {
     }
 
     config.servers.forEach((server) => {
-        let logger = new Logger(config.debug, server.name, null, 0);
+        let logger = new Logger(config.debug, server.name, config.LogPath, 0);
         let app = new  TgManagerServer(server, config, logger);
 
         app.start();

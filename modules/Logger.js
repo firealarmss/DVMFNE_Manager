@@ -45,7 +45,7 @@ class Logger {
 
     writeLogFile(message) {
         if (this.logFile) {
-            fs.appendFile(this.logFile, message, (err) => {
+            fs.appendFile(this.logFile, message + "\n", (err) => {
                 if (err) {
                     console.error(`Error writing to log file: ${err}`);
                 }
