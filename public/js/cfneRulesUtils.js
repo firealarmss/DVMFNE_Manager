@@ -29,6 +29,23 @@ function addRewrite(groupIndex) {
     rewriteContainer.appendChild(rewriteDiv);
 }
 
+function deleteTalkGroup(groupIndex) {
+    if (!confirm('Are you sure you want to delete this talkgroup?')) {
+        return;
+    }
+
+    groups.groupVoice.splice(groupIndex, 1);
+
+    const groupDiv = document.querySelector(`.group[data-group-index="${groupIndex}"]`);
+    if (groupDiv) {
+        groupDiv.remove();
+    }
+
+    document.querySelectorAll('.group').forEach((group, index) => {
+        group.setAttribute('data-group-index', index);
+    });
+}
+
 function addNewTalkGroup() {
     const newTgName = document.getElementById('newTgName').value;
     const newTgActive = document.getElementById('newTgActive').value === 'true';
@@ -135,6 +152,8 @@ function saveChanges() {
             }
         };
     }).filter(group => group !== null);
+
+    groups.groupVoice = updatedGroups;
 
     $.ajax({
         url: '/writeTgRuleChanges',

@@ -113,6 +113,7 @@
                     <label for="group-source-slot-<%= index %>">Slot:</label>
                     <input type="number" id="group-source-slot-<%= index %>" class="form-control" value="<%= group.source.slot %>">
                 </div>
+                <button type="button" class="btn btn-danger" onclick="deleteTalkGroup(<%= index %>)">Delete</button>
             </div>
         <% }); %>
     </div>
