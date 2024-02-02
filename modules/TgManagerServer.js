@@ -17,14 +17,14 @@ const FneCommunications = require('./FneCommunications');
 const Logger = require('./Logger');
 
 class TgManagerServer {
-    constructor(server, config) {
+    constructor(server, config, logger) {
 
         this.config = config;
         this.server = server;
 
         this.app = express();
 
-        this.logger = new Logger(true, this.name, null, 0);
+        this.logger = logger
 
         this.dbManager = new DbManager("./db/users.db", this.logger);
 
@@ -76,6 +76,7 @@ class TgManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
+                        this.logger.debug("Restart FNE request", "MANAGER SERVER");
                         this.logger.debug(status, "MANAGER SERVER");
                     } else {
                         res.send("Fail");
@@ -94,6 +95,7 @@ class TgManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
+                        this.logger.debug("Start FNE request", "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -112,6 +114,7 @@ class TgManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
+                        this.logger.debug("Stop FNE request", "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -130,6 +133,7 @@ class TgManagerServer {
                 .then(status => {
                     if (status) {
                         res.send(fneCommunications.commandOutput);
+                        this.logger.debug("FNE Status: " + fneCommunications.commandOutput, "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -137,14 +141,15 @@ class TgManagerServer {
                 })
                 .catch(status => {
                     res.send("error");
-                    console.log(status);
+                    this.logger.error("Error getting FNE status", "MANAGER SERVER");
+                    console.error(status);
                 });
         });
 
         this.app.get('/tg_rules', this.isAuthenticated, (req, res) => {
             let tgRulesHandler = new TgRulesHandler(this.RulePath, this.logger);
+
             tgRulesHandler.read();
-            //console.log(JSON.stringify(tgRulesHandler.rules));
 
             res.render('tg_rules', {
                 rules: tgRulesHandler.rules,
@@ -154,11 +159,18 @@ class TgManagerServer {
 
         this.app.post('/auth', (req, res) => {
             const { username, password } = req.body;
+
+            this.logger.info(`Auth Request; User: ${username}`, "MANAGER SERVER");
+
             this.dbManager.validateUser(username, password, (err, user) => {
                 if (user) {
                     req.session.user = user;
+                    this.logger.info(`Auth Request granted; User: ${user}`, "MANAGER SERVER");
+
                     res.redirect('/');
                 } else {
+                    this.logger.info(`Auth Request failed; User: ${user}`, "MANAGER SERVER");
+
                     res.render('login', { message: 'Invalid username or password' });
                 }
             });
@@ -230,7 +242,6 @@ class TgManagerServer {
 
             tgRulesHandler.write(rules);
 
-            //  console.log(JSON.stringify(rules))
             res.sendStatus(200);
         });
     }

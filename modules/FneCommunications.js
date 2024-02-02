@@ -7,6 +7,10 @@
  * LICENSE file that was distributed with this source code.
  */
 
+/*
+    This Entire file could change and be much better if FNE2 had a REST api to do this. This is the only way i can come up with
+ */
+
 const { exec } = require('child_process');
 
 class FneCommunications {
@@ -15,9 +19,6 @@ class FneCommunications {
         this.logger = logger;
     }
 
-    /*
-        This Entire file could change and be much better if FNE2 had a REST api to do this. This is the only way i can come up with
-     */
     restartFneService() {
         return new Promise((resolve, reject) => {
             exec('dir', (err, stdout, stderr) => {

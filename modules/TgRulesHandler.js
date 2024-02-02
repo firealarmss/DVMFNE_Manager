@@ -20,7 +20,7 @@ class TgRulesHandler {
         try {
             this.rules = yaml.load(fs.readFileSync(this.ruleFilePath, 'utf8'));
         } catch (e) {
-            console.log("Error reading tg rule file: " + e);
+            this.logger.error("Error reading tg rule file: " + e);
         }
     }
 
@@ -28,11 +28,11 @@ class TgRulesHandler {
         try {
             fs.writeFile(this.ruleFilePath, yaml.dump(rules), (err) => {
                 if (err) {
-                    console.log("Error writing tg rule file: " + err);
+                    this.logger.error("Error writing tg rule file: " + err);
                 }
             });
         } catch (e) {
-            console.log("Error writing tg rule file: " + e);
+            this.logger.error("Error writing tg rule file: " + e);
         }
     }
 }
