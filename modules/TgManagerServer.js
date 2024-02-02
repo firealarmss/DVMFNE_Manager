@@ -43,6 +43,8 @@ class TgManagerServer {
 
         this.app.use(bodyParser.urlencoded({ extended: true }));
 
+        this.app.set('trust proxy', true);
+
         this.app.use(session({
             secret: 'your_secret_key',
             resave: false,
@@ -171,16 +173,18 @@ class TgManagerServer {
         this.app.post('/auth', (req, res) => {
             const { username, password } = req.body;
 
-            this.logger.info(`Auth Request; User: ${username}`, "MANAGER SERVER");
+            const ip = req.ip;
+
+            this.logger.info(`Auth Request; User: ${username}; IP: ${ip}`, "MANAGER SERVER");
 
             this.dbManager.validateUser(username, password, (err, user) => {
                 if (user) {
                     req.session.user = user;
-                    this.logger.info(`Auth Request granted; User: ${user.username}`, "MANAGER SERVER");
+                    this.logger.info(`Auth Request granted; User: ${user.username}; IP: ${ip}`, "MANAGER SERVER");
 
                     res.redirect('/');
                 } else {
-                    this.logger.info(`Auth Request failed; User: ${username}`, "MANAGER SERVER");
+                    this.logger.info(`Auth Request failed; User: ${username}; IP: ${ip}`, "MANAGER SERVER");
 
                     res.render('login', { message: 'Invalid username or password' });
                 }
