@@ -4,6 +4,10 @@ configs/*
 
 db/*.db
 
+.idea
+.idea/*
+.idea/**
+
 #tests
 
 tests/*
