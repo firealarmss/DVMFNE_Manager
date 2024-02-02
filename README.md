@@ -34,7 +34,7 @@ npm run start
 
 ### Configure
 
-
+Note: Default username is `admin` and password is `password`. I recommend changing this.
 
 Edit the `config.yml` file to your needs
 
