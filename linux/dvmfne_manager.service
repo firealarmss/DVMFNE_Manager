@@ -1,0 +1,14 @@
+[Unit]
+Description=DVMFNE Manager
+After=syslog.target network.target
+
+[Service]
+User=root
+Type=forking
+ExecStart=/opt/DVMFNE_Manager/bin/dvmfne_manager -c /opt/DVMFNE_Manager/configs/config.yml
+Restart=on-abnormal
+WorkingDirectory=/opt/DVMFNE_Manager
+TimeoutSec=infinity
+
+[Install]
+WantedBy=multi-user.target
