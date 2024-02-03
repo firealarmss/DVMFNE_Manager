@@ -131,6 +131,17 @@ class TgManagerServer {
             res.render("peerList", { peers: response.peers });
         });
 
+        this.app.get('/fneAffiliationList', async (req, res) => {
+            let fneCommunications = new FneCommunications(this.server, this.logger);
+            let response = await fneCommunications.getFneAffiliationList();
+            if (!response) {
+                res.send("Error getting peer list");
+                return;
+            }
+
+            res.render("affiliationList", { peers: response.affiliations });
+        });
+
         this.app.get('/fneStatus', this.isAuthenticated, async (req, res) => {
             let fneCommunications = new FneCommunications(this.server, this.logger);
             let response = await fneCommunications.getFneStatus();

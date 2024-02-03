@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head.ejs') %>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <title>Affiliations</title>
+    <style>
+        .affiliation-tree .list-group-item {
+            cursor: pointer;
+            position: relative;
+            padding-right: 30px;
+        }
+        .affiliation-tree .list-group-item i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.2s;
+        }
+        .affiliation-list .list-group-item {
+            background-color: #f8f9fa;
+            border-left: 3px solid #007bff;
+            margin-left: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Peer Affiliations</h2>
+    <div class="affiliation-tree">
+        <% peers.forEach(function(peer, index) { %>
+            <div class="list-group">
+                <a href="#peer-<%= index %>" class="list-group-item list-group-item-action" data-toggle="collapse" aria-expanded="false" aria-controls="peer-<%= index %>">
+                    Peer ID: <%= peer.peerId %> (Affiliations: <%= peer.affiliations.length %>)
+                    <i class="fas fa-caret-right"></i>
+                </a>
+
+                <div id="peer-<%= index %>" class="collapse" aria-labelledby="peer-<%= index %>">
+                    <% if (peer.affiliations && peer.affiliations.length > 0) { %>
+                        <ul class="list-group affiliation-list">
+                            <% peer.affiliations.forEach(function(affiliation) { %>
+                                <li class="list-group-item">
+                                    DST ID: <%= affiliation.dstId %>, SRC ID: <%= affiliation.srcId %>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    <% } else { %>
+                        <ul class="list-group affiliation-list">
+                            <li class="list-group-item">No affiliations</li>
+                        </ul>
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.list-group-item').on('click', function(e) {
+            e.stopPropagation();
+            var targetCollapse = $(this).attr('href');
+            $(targetCollapse).collapse('toggle');
+
+            $(this).find('.fas').toggleClass('fa-caret-right fa-caret-down');
+        });
+    });
+</script>
+</body>
+</html>
