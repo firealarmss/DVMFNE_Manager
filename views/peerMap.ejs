@@ -18,10 +18,7 @@
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="/public/js/fneUtils.js"></script>
 <script>
-    const peerMapInclusionData = <%- JSON.stringify(PeerMapInclusions) %>;
-    const peerMapInclusionSet = new Set(peerMapInclusionData.map(item => String(item.PeerMapInclusions).trim()));
     const peers = <%- JSON.stringify(peers) %>;
-    const username = "<%= user %>";
 
     document.addEventListener('DOMContentLoaded', () => {
         const initialLat = 37.0902;
@@ -35,19 +32,14 @@
         }).addTo(map);
 
         peers.forEach(peer => {
-            if (peer.config && peer.config.info) {
-                if (!peerMapInclusionSet.has(String(peer.peerId).trim()) && !username){
-                    console.log("Peer ID excluded:", peer.peerId);
-                    return;
-                }
-                const { latitude, longitude, location } = peer.config.info;
-                if (latitude && longitude) {
-                    const marker = L.marker([latitude, longitude]).addTo(map);
-                    marker.bindPopup(`<b>${location}</b><br />Peer ID: ${peer.peerId}<br />RX Frequency: ${(peer.config.rxFrequency / 1e6).toFixed(4)}MHz<br />TX Frequency: ${(peer.config.txFrequency / 1e6).toFixed(4)}MHz<br />`);
-                }
+            const { latitude, longitude, location } = peer.config.info;
+            if (latitude && longitude) {
+                const marker = L.marker([latitude, longitude]).addTo(map);
+                marker.bindPopup(`<b>${location}</b><br />Peer ID: ${peer.peerId}<br />RX Frequency: ${(peer.config.rxFrequency / 1e6).toFixed(4)}MHz<br />TX Frequency: ${(peer.config.txFrequency / 1e6).toFixed(4)}MHz<br />`);
             }
         });
     });
 </script>
+
 </body>
 </html>

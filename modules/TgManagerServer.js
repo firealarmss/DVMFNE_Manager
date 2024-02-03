@@ -115,8 +115,17 @@ class TgManagerServer {
                 if (err) {
                     res.send("Error retrieving inclusions");
                 } else {
-                    console.log(inclusions);
-                    res.render("peerMap", { peers: response.peers, PeerMapInclusions: inclusions });
+                    const peerMapInclusionSet = new Set(inclusions.map(item => String(item.PeerMapInclusions).trim()));
+
+                    const filteredPeers = req.session.user ?
+                        response.peers :
+                        response.peers.filter(peer => peerMapInclusionSet.has(String(peer.peerId).trim()));
+
+                    res.render('peerMap', {
+                        name: this.name,
+                        peers: filteredPeers,
+                        PeerMapInclusions: inclusions,
+                    });
                 }
             });
         });
