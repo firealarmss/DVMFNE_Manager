@@ -3,6 +3,25 @@ LogPath: "./logs/tg_manager.log"
 
 servers:
   - name: "Centrunk"
+    type: "CFNE" #FNE2 or CFNE
+
+    ServerPort: 3001
+    ServerBindAddress: 0.0.0.0
+
+    RestAddress: "127.0.0.1"
+    RestPort: 9990
+    RestPassword: "passw0rd"
+
+    RulePath: "./tests/cfne_rules.yml"
+    ConfigPath: "./tests/cfne_rules.yml"
+
+    # I would love for these to not be needed, but only way to do it right now
+    StartCommand: "sudo systemctl start cfne.service"
+    StopCommand: "sudo systemctl stop cfne.service"
+    RestartCommand: "sudo systemctl restart cfne.service"
+    StatusCommand: "sudo systemctl status cfne.service"
+
+  - name: "FNE2 is no longer support, but some features will work"
     type: "FNE2" #FNE2 or CFNE
 
     ServerPort: 3000
@@ -16,18 +35,3 @@ servers:
     StopCommand: "sudo systemctl stop fne2.service"
     RestartCommand: "sudo systemctl restart fne2.service"
     StatusCommand: "sudo systemctl status fne2.service"
-
-  - name: "Centrunk CFNE"
-    type: "CFNE" #FNE2 or CFNE
-
-    ServerPort: 3001
-    ServerBindAddress: 0.0.0.0
-
-    RulePath: "./tests/cfne_rules.yml"
-    ConfigPath: "./tests/cfne_rules.yml"
-
-    # I would love for these to not be needed, but only way to do it right now
-    StartCommand: "sudo systemctl start cfne.service"
-    StopCommand: "sudo systemctl stop cfne.service"
-    RestartCommand: "sudo systemctl restart cfne.service"
-    StatusCommand: "sudo systemctl status cfne.service"
