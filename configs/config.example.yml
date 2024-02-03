@@ -1,9 +1,9 @@
 debug: false
-LogPath: "./logs/tg_manager.log"
+LogPath: "./logs/tg_manager.log" # If you do want to log to a file, comment this line
 
 servers:
   - name: "Centrunk"
-    type: "CFNE" #FNE2 or CFNE
+    type: "CFNE" # FNE2 or CFNE
 
     ServerPort: 3001
     ServerBindAddress: 0.0.0.0
@@ -22,7 +22,7 @@ servers:
     StatusCommand: "sudo systemctl status cfne.service"
 
   - name: "FNE2 is no longer support, but some features will work"
-    type: "FNE2" #FNE2 or CFNE
+    type: "FNE2" # FNE2 or CFNE
 
     ServerPort: 3000
     ServerBindAddress: 0.0.0.0
