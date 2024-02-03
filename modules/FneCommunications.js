@@ -17,6 +17,17 @@ class FneCommunications {
         this.restClient = new RESTClient(server.RestAddress, server.RestPort, server.RestPassword, this.logger);
     }
 
+    async forceUpdate(){
+        try {
+            const response = await this.restClient.send('GET', '/force-update', null);
+            if (response.status === 200) {
+                return response;
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
     async getFneAffiliationList(){
         try {
             const response = await this.restClient.send('GET', '/report-affiliations', null);

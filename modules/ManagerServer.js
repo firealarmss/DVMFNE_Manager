@@ -104,6 +104,25 @@ class ManagerServer {
             res.render('overview', { config: this.config });
         });
 
+        this.app.get('/fneForceUpdate', this.isAuthenticated, (req, res) => {
+            let fneCommunications = new FneCommunications(this.server, this.logger);
+
+            fneCommunications.forceUpdate()
+                .then(status => {
+                    if (status) {
+                        res.send("Success!")
+                        this.logger.dbug("Force Update FNE request", "MANAGER SERVER");
+                        console.log(status);
+                    } else {
+                        res.send("Fail");
+                    }
+                })
+                .catch(status => {
+                    res.send("error");
+                    this.logger.dbug(status, "MANAGER SERVER");
+                });
+        });
+
         this.app.get('/fnePeerMap', async (req, res) => {
             let fneCommunications = new FneCommunications(this.server, this.logger);
             let response = await fneCommunications.getFnePeerList();

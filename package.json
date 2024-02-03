@@ -1,12 +1,15 @@
 {
-  "name": "fne2_tg_manager",
-  "version": "1.0.0",
+  "name": "dvmfne_manager",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
     "start": "node index.js -c configs/config.yml",
     "build": "pkg . -o ./bin/fne2_tg_manager",
+    "build:linux": "pkg . --targets node18-linux-x64 -o ./bin/dvmfne_manager-linux",
+    "build:win": "pkg . --targets node18-win-x64 -o ./bin/dvmfne_manager-win.exe",
+    "build:mac": "pkg . --targets node18-macos-x64 -o ./bin/dvmfne_manager-mac",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
