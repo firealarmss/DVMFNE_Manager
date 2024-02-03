@@ -68,8 +68,73 @@ class TgManagerServer {
             res.render('system_landing');
         });
 
+        this.app.get('/peerMapInclusions', this.isAuthenticated, (req, res) => {
+            this.dbManager.getAllPeerMapInclusions((err, inclusions) => {
+                if (err) {
+                    res.send("Error retrieving inclusions");
+                } else {
+                    res.render('peerMapInclusions', { inclusions: inclusions });
+                }
+            });
+        });
+
+        this.app.post('/addInclusion', (req, res) => {
+            const peerId = req.body.PeerMapInclusions;
+            this.dbManager.addPeerMapInclusion(peerId, (err) => {
+                if (err) {
+                    res.send("Error adding PeerMapInclusion");
+                } else {
+                    res.redirect('/peerMapInclusions');
+                }
+            });
+        });
+
+        this.app.post('/deleteInclusion/:id', (req, res) => {
+            const id = req.params.id;
+            this.dbManager.deletePeerMapInclusion(id, (err) => {
+                if (err) {
+                    res.send("Error deleting PeerMapInclusion");
+                } else {
+                    res.redirect('/peerMapInclusions');
+                }
+            });
+        });
+
         this.app.get('/overview', (req, res) => {
             res.render('overview', { config: this.config });
+        });
+
+        this.app.get('/fnePeerMap', async (req, res) => {
+            let fneCommunications = new FneCommunications(this.server, this.logger);
+            let response = await fneCommunications.getFnePeerList();
+            if (!response) {
+                res.send("Error getting peer list");
+                return;
+            }
+            this.dbManager.getAllPeerMapInclusions((err, inclusions) => {
+                if (err) {
+                    res.send("Error retrieving inclusions");
+                } else {
+                    console.log(inclusions);
+                    res.render("peerMap", { peers: response.peers, PeerMapInclusions: inclusions });
+                }
+            });
+        });
+
+        this.app.get('/fnePeerList', this.isAuthenticated, async (req, res) => {
+            let fneCommunications = new FneCommunications(this.server, this.logger);
+            let response = await fneCommunications.getFnePeerList();
+            if (!response) {
+                res.send("Error getting peer list");
+                return;
+            }
+            res.render("peerList", { peers: response.peers });
+        });
+
+        this.app.get('/fneStatus', this.isAuthenticated, async (req, res) => {
+            let fneCommunications = new FneCommunications(this.server, this.logger);
+            let response = await fneCommunications.getFneStatus();
+            res.send(response);
         });
 
         this.app.get('/restartFne', this.isAuthenticated, (req, res) => {
@@ -129,7 +194,7 @@ class TgManagerServer {
                 });
         });
 
-        this.app.get('/fneStatus', this.isAuthenticated, (req, res) => {
+        this.app.get('/fneServiceStatus', this.isAuthenticated, (req, res) => {
             let fneCommunications = new FneCommunications(this.server, this.logger);
 
             fneCommunications.getFneServiceStatus()

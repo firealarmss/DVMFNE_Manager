@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+<body>
+<div class="container mt-4">
+    <h1 class="mb-4">Peer Map Inclusions Manager</h1>
+    <form action="/addInclusion" method="POST" class="mb-4">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="PeerMapInclusions" placeholder="Enter Peer ID" required>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Add Inclusion</button>
+            </div>
+        </div>
+    </form>
+    <ul class="list-group mb-4">
+        <% for(let inclusion of inclusions) { %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <%= inclusion.PeerMapInclusions %>
+                <form action="/deleteInclusion/<%= inclusion.id %>" method="POST">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </li>
+        <% } %>
+    </ul>
+</div>
+</body>
+</html>

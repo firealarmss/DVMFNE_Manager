@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+<body>
+<script src="/public/js/fneUtils.js"></script>
+<div class="container mt-4">
+    <h2><%=name%> Peers</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Connected</th>
+            <th>Peer ID</th>
+            <th>Identity</th>
+            <th>Address</th>
+            <th>Rx Frequency</th>
+            <th>Software</th>
+            <th>Tx Frequency</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% peers.forEach(peer => { %>
+            <tr>
+                <td><%= peer.connected ? 'Yes' : 'No' %></td>
+                <td><%= peer.peerId %></td>
+                <td><%= peer.config.identity %></td>
+                <td><%= peer.address %></td>
+                <td data-frequency="<%= peer.config.rxFrequency %>"></td>
+                <td><%= peer.config.software %></td>
+                <td data-frequency="<%= peer.config.txFrequency %>"></td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -7,16 +7,36 @@
  * LICENSE file that was distributed with this source code.
  */
 
-/*
-    This Entire file could change and be much better if FNE2 had a REST api to do this. This is the only way i can come up with
- */
-
 const { exec } = require('child_process');
+const RESTClient = require('./RESTClient');
 
 class FneCommunications {
     constructor(server, logger) {
         this.server = server;
         this.logger = logger;
+        this.restClient = new RESTClient(server.RestAddress, server.RestPort, server.RestPassword, this.logger);
+    }
+
+    async getFnePeerList(){
+        try {
+            const response = await this.restClient.send('GET', '/peerlist', null);
+            if (response.status === 200) {
+                return response;
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
+    async getFneStatus() {
+        try {
+            const response = await this.restClient.send('GET', '/status', null);
+            if (response.status === 200) {
+                return response;
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
     }
 
     restartFneService() {

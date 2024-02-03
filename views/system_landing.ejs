@@ -2,26 +2,46 @@
 <html lang="en">
 <head>
     <%- include('partials/head.ejs') %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        .button-group {
+            margin-bottom: 20px;
+        }
+        .button-group a {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <div class="jumbotron mt-5">
-        <h1 class="display-4"><%=name%> TG Manager</h1>
-        <p class="lead">Simple TG file editor</p>
+        <h1 class="display-4"><%=name%> DVMFNE Manager</h1>
+        <p class="lead">Manage your DVMFNE settings and view status.</p>
         <hr class="my-4">
 
         <% if (user) { %>
-            <a class="btn btn-primary btn-lg" href="/users" role="button">User Management</a>
-            <a class="btn btn-info btn-lg" href="/tg_rules" role="button">TG Rules</a>
-            <a class="btn btn-info btn-lg" href="/restartFne" role="button">Restart FNE</a>
-            <a class="btn btn-info btn-lg" href="/startFne" role="button">Start FNE</a>
-            <a class="btn btn-info btn-lg" href="/stopFne" role="button">Stop FNE</a>
-            <a class="btn btn-info btn-lg" href="/fneStatus" role="button">FNE Status</a>
-            <a class="btn btn-secondary btn-lg" href="/logout" role="button">Logout</a>
-    <% } else { %>
-            <a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
+            <div class="button-group">
+                <a class="btn btn-primary btn-lg" href="/users" role="button"><i class="fas fa-users"></i> User Management</a>
+                <a class="btn btn-primary btn-lg" href="/peerMapInclusions" role="button"><i class="fas fa-map-marked-alt"></i> Peer Map Inclusions</a>
+                <a class="btn btn-info btn-lg" href="/tg_rules" role="button"><i class="fas fa-ruler-combined"></i> TG Rules</a>
+                <a class="btn btn-info btn-lg" href="/fnePeerMap" role="button"><i class="fas fa-map"></i> FNE Peer Map</a>
+                <a class="btn btn-info btn-lg" href="/fnePeerList" role="button"><i class="fas fa-list"></i> FNE Peers</a>
+            </div>
+            <div class="button-group">
+                <a class="btn btn-success btn-lg" href="/startFne" role="button"><i class="fas fa-play"></i> Start FNE</a>
+                <a class="btn btn-warning btn-lg" href="/restartFne" role="button"><i class="fas fa-redo"></i> Restart FNE</a>
+                <a class="btn btn-danger btn-lg" href="/stopFne" role="button"><i class="fas fa-stop"></i> Stop FNE</a>
+            </div>
+            <div class="button-group">
+                <a class="btn btn-secondary btn-lg" href="/fneStatus" role="button"><i class="fas fa-tachometer-alt"></i> FNE Status</a>
+                <a class="btn btn-secondary btn-lg" href="/logout" role="button"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        <% } else { %>
+            <div class="button-group">
+                <a class="btn btn-info btn-lg" href="/fnePeerMap" role="button"><i class="fas fa-map"></i> FNE Peer Map</a>
+                <a class="btn btn-primary btn-lg" href="/login" role="button"><i class="fas fa-sign-in-alt"></i> Login</a>
+            </div>
         <% } %>
-
     </div>
 </div>
 

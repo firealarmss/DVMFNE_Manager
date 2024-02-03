@@ -28,7 +28,7 @@ class DbManager {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT,
         password TEXT
-    )`, (err) => {
+        )`, (err) => {
             if (err) {
                 this.logger.error('Error creating the table:' + err, "DB MANAGER");
             } else {
@@ -45,6 +45,39 @@ class DbManager {
                         });
                     }
                 });
+            }
+        });
+
+        this.db.run(`CREATE TABLE IF NOT EXISTS fne_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            PeerMapInclusions TEXT
+        )`, (err) => {
+            if (err) {
+                this.logger.error('Error creating the FNE table:' + err, "DB MANAGER");
+            } else {
+                this.logger.info('FNE table initialized', "DB MANAGER");
+            }
+        });
+    }
+
+    addPeerMapInclusion(PeerMapInclusions, callback) {
+        this.db.run(`INSERT INTO fne_data (PeerMapInclusions) VALUES (?)`, [PeerMapInclusions], (err) => {
+            callback(err);
+        });
+    }
+
+    deletePeerMapInclusion(id, callback) {
+        this.db.run(`DELETE FROM fne_data WHERE id = ?`, [id], (err) => {
+            callback(err);
+        });
+    }
+
+    getAllPeerMapInclusions(callback) {
+        this.db.all(`SELECT * FROM fne_data`, [], (err, rows) => {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, rows);
             }
         });
     }
