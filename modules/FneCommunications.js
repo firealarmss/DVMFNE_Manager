@@ -19,7 +19,7 @@ class FneCommunications {
 
     async getFnePeerList(){
         try {
-            const response = await this.restClient.send('GET', '/peerlist', null);
+            const response = await this.restClient.send('GET', '/peer/query', null);
             if (response.status === 200) {
                 return response;
             }
