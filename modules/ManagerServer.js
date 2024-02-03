@@ -16,7 +16,7 @@ const DbManager = require('./DbManager');
 const FneCommunications = require('./FneCommunications');
 const Logger = require('./Logger');
 
-class TgManagerServer {
+class ManagerServer {
     constructor(server, config, logger) {
 
         this.config = config;
@@ -361,4 +361,4 @@ class TgManagerServer {
     }
 }
 
-module.exports = TgManagerServer;
+module.exports = ManagerServer;

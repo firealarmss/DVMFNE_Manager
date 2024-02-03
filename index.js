@@ -10,7 +10,7 @@
 const yargs = require('yargs');
 const fs = require('fs');
 const yaml = require('js-yaml');
-const TgManagerServer = require('./modules/TgManagerServer');
+const TgManagerServer = require('./modules/ManagerServer');
 const Logger = require('./modules/Logger');
 
 const argv = yargs
