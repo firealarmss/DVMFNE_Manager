@@ -20,7 +20,12 @@
         </tr>
         </thead>
         <tbody>
-        <% peers.forEach(peer => { %>
+        <%  peers.forEach(peer => {
+            if (!peer.config){
+                console.warn("Skipped peer with no config info: ", peer.peerId);
+                return;
+            }
+        %>
             <tr>
                 <td><%= peer.connected ? 'Yes' : 'No' %></td>
                 <td><%= peer.peerId %></td>

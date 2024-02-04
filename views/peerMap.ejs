@@ -32,6 +32,11 @@
         }).addTo(map);
 
         peers.forEach(peer => {
+            if (!peer.config.info) {
+                console.warn("Skipped peer with no info: ", peer.peerId);
+                return;
+            }
+
             const { latitude, longitude, location } = peer.config.info;
             if (latitude && longitude) {
                 const marker = L.marker([latitude, longitude]).addTo(map);
