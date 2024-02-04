@@ -26,13 +26,16 @@
     </style>
 </head>
 <body>
+<% affiliationCount = 0; %>
 <div class="container mt-4">
     <h2>Peer Affiliations</h2>
+    <div id="affiliationCountDiv"></div>
     <div class="affiliation-tree">
         <% peers.forEach(function(peer, index) { %>
             <div class="list-group">
                 <a href="#peer-<%= index %>" class="list-group-item list-group-item-action" data-toggle="collapse" aria-expanded="false" aria-controls="peer-<%= index %>">
                     Peer ID: <%= peer.peerId %> (Affiliations: <%= peer.affiliations.length %>)
+                    <% affiliationCount += peer.affiliations.length; %>
                     <i class="fas fa-caret-right"></i>
                 </a>
 
@@ -59,7 +62,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+    document.getElementById('affiliationCountDiv').innerHTML = 'Total Affiliations: ' + <%= affiliationCount %> + " | Peer Count: " + "<%= peers.length %>";
+
     $(document).ready(function() {
+
         $('.list-group-item').on('click', function(e) {
             e.stopPropagation();
             var targetCollapse = $(this).attr('href');
