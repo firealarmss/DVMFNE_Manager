@@ -17,9 +17,9 @@ function formatFrequency(freqHz) {
 
 document.addEventListener('DOMContentLoaded', (event) => {
     const frequencyElements = document.querySelectorAll('[data-frequency]');
-    const connectionStatusElemenst = document.querySelectorAll('[data-connState]');
+    const connectionStatusElements = document.querySelectorAll('[data-connState]');
 
-    connectionStatusElemenst.forEach(element => {
+    connectionStatusElements.forEach(element => {
         const state = element.getAttribute('data-connState');
         console.debug(netConnectionStatus[parseInt(state)])
 
