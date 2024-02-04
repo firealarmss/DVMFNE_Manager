@@ -7,10 +7,12 @@
 <script src="/public/js/fneUtils.js"></script>
 <div class="container mt-4">
     <h2><%=name%> Peers</h2>
+    <h4>Peer Count: <%=peers.length%></h4>
     <table class="table table-striped">
         <thead>
         <tr>
             <th>Connected</th>
+            <th>Connection State</th>
             <th>Peer ID</th>
             <th>Identity</th>
             <th>Address</th>
@@ -20,9 +22,15 @@
         </tr>
         </thead>
         <tbody>
-        <% peers.forEach(peer => { %>
+        <%  peers.forEach(peer => {
+            if (!peer.config){
+                console.warn("Skipped peer with no config info: ", peer.peerId);
+                return;
+            }
+        %>
             <tr>
                 <td><%= peer.connected ? 'Yes' : 'No' %></td>
+                <td data-connState="<%= peer.connectionState %>"></td>
                 <td><%= peer.peerId %></td>
                 <td><%= peer.config.identity %></td>
                 <td><%= peer.address %></td>
