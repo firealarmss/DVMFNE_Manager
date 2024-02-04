@@ -23,12 +23,18 @@
         </thead>
         <tbody>
         <%  peers.forEach(peer => {
+            let trClass = '';
+
             if (!peer.config){
                 console.warn("Skipped peer with no config info: ", peer.peerId);
                 return;
             }
+
+            if (peer.connectionState.toString() !== '4') {
+                trClass = 'table-warning';
+            }
         %>
-            <tr>
+            <tr class="<%= trClass %>">
                 <td><%= peer.connected ? 'Yes' : 'No' %></td>
                 <td data-connState="<%= peer.connectionState %>"></td>
                 <td><%= peer.peerId %></td>
