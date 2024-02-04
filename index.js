@@ -25,7 +25,7 @@ const argv = yargs
     .argv;
 
 let config = {
-    servers: undefined
+    Servers: undefined
 };
 
 if (argv.config) {
@@ -37,8 +37,16 @@ if (argv.config) {
         process.exit(1);
     }
 
-    config.servers.forEach((server) => {
+    let LogPath = config.LogPath || "Disabled";
+
+    console.log(`DVMFNE Manager\n\nDebug: ${config.Debug}\nLog Path: ${LogPath}\nLoaded: ${config.Servers.length} servers\n`);
+
+    config.Servers.forEach((server) => {
         let logger = new Logger(config.debug, server.name, config.LogPath, 0);
+
+        if (server.type === "FNE2"){
+            logger.warn("FNE2 is no longer support!", "CONFIG LOADER");
+        }
         let app = new  TgManagerServer(server, config, logger);
 
         app.start();

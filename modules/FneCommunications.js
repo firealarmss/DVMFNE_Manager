@@ -14,7 +14,7 @@ class FneCommunications {
     constructor(server, logger) {
         this.server = server;
         this.logger = logger;
-        this.restClient = new RESTClient(server.RestAddress, server.RestPort, server.RestPassword, this.logger);
+        this.restClient = new RESTClient(server.Rest.address, server.Rest.port, server.Rest.password, this.logger);
     }
 
     async forceUpdate(){

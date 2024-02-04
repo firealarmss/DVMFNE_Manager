@@ -25,8 +25,8 @@ class Logger {
 
     warn(message, location = null) {
         const locationPart = location ? `[${location}] ` : '';
-        console.log(`[${this.getDateTime()}] [INFO] [${this.systemName}] ${locationPart}${message}`);
-        this.writeLogFile(`[${this.getDateTime()}] [INFO] [${this.systemName}] ${locationPart}${message}`);
+        console.log(`[${this.getDateTime()}] [WARN] [${this.systemName}] ${locationPart}${message}`);
+        this.writeLogFile(`[${this.getDateTime()}] [WARN] [${this.systemName}] ${locationPart}${message}`);
     }
 
     info(message, location = null) {
