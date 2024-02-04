@@ -1,16 +1,17 @@
-debug: false
-LogPath: "./logs/tg_manager.log" # If you do want to log to a file, comment this line
+Debug: false
+LogPath: "./logs/tg_manager.log" # If you do not want to log to a file, comment this line
 
-servers:
+Servers:
   - name: "Centrunk"
     type: "CFNE" # FNE2 or CFNE
 
     ServerPort: 3001
     ServerBindAddress: 0.0.0.0
 
-    RestAddress: "127.0.0.1"
-    RestPort: 9990
-    RestPassword: "passw0rd"
+    Rest:
+      address: "127.0.0.1"
+      port: 9990
+      password: "passw0rd"
 
     RulePath: "./tests/cfne_rules.yml"
     ConfigPath: "./tests/cfne_rules.yml"
