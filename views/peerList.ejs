@@ -12,6 +12,7 @@
         <thead>
         <tr>
             <th>Connected</th>
+            <th>Connection State</th>
             <th>Peer ID</th>
             <th>Identity</th>
             <th>Address</th>
@@ -29,6 +30,7 @@
         %>
             <tr>
                 <td><%= peer.connected ? 'Yes' : 'No' %></td>
+                <td data-connState="<%= peer.connectionState %>"></td>
                 <td><%= peer.peerId %></td>
                 <td><%= peer.config.identity %></td>
                 <td><%= peer.address %></td>
