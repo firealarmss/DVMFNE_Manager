@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     connectionStatusElemenst.forEach(element => {
         const state = element.getAttribute('data-connState');
-console.log(state)
-        console.log(netConnectionStatus[parseInt(state)])
+        console.debug(netConnectionStatus[parseInt(state)])
+
         element.textContent = netConnectionStatus[parseInt(state)] || state;
     });
 
