@@ -33,7 +33,7 @@
 
         peers.forEach(peer => {
             if (!peer.config.info) {
-                console.warn("Skipped peer with no info: ", peer.peerId);
+                console.warn(`Skipped peer with no info: ${peer.peerId}; Peer has the following connection state: ${netConnectionStatus[parseInt(peer.connectionState)]}`);
                 return;
             }
 

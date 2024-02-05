@@ -25,8 +25,8 @@
         <%  peers.forEach(peer => {
             let trClass = '';
 
-            if (!peer.config){
-                console.warn("Skipped peer with no config info: ", peer.peerId);
+            if (!peer){
+                console.warn(`Skipped null peer: ${peer.peerId}`);
                 return;
             }
 
