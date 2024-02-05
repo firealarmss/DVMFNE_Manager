@@ -13,6 +13,7 @@ const yaml = require('js-yaml');
 const TgManagerServer = require('./modules/ManagerServer');
 const Logger = require('./modules/Logger');
 const AutoAcl = require('./modules/AutoAcl');
+const DiscordBot = require('./modules/DiscordBot');
 
 const argv = yargs
 
@@ -40,7 +41,7 @@ if (argv.config) {
 
     let LogPath = config.LogPath || "Disabled";
 
-    console.log(`DVMFNE Manager\n\nDebug: ${config.Debug}\nLog Path: ${LogPath}\nLoaded: ${config.Servers.length} servers\n}`);
+    console.log(`DVMFNE Manager\n\nDebug: ${config.Debug}\nLog Path: ${LogPath}\nLoaded: ${config.Servers.length} servers\n`);
 
     config.Servers.forEach((server) => {
         let logger = new Logger(config.debug, server.name, config.LogPath, 0);
@@ -52,6 +53,10 @@ if (argv.config) {
         let app = new  TgManagerServer(server, config, logger);
 
         app.start();
+
+        if (server.Discord.enabled) {
+            new DiscordBot(logger, server);
+        }
 
         if (server.AutoAclInterval && server.AutoAclInterval > 0) {
             autoAcl.start();

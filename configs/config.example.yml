@@ -5,7 +5,7 @@ Servers:
   - name: "Centrunk"
     type: "CFNE" # FNE2 or CFNE
 
-    AutoAclInterval: 1 # 0 to disable. Time in minutes
+    AutoAclInterval: 60 # 0 to disable. Time in minutes
 
     ServerPort: 3001
     ServerBindAddress: 0.0.0.0
@@ -16,13 +16,19 @@ Servers:
       password: "passw0rd"
 
     Sheets:
-      enabled: true
+      enabled: false
       autoUpdateFne: true
       sheetId: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       serviceAccountKeyFile: "configs/google.json"
       RidAcl:
         tab: "RID_ACL"
         range: "A:B"
+
+    Discord:
+      enabled: false
+      token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      clientId: "00000000000000000"
+      guildId: "111111111111111111"
 
     RulePath: "./tests/cfne_rules.yml"
     ConfigPath: "./tests/cfne_rules.yml"
