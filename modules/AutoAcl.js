@@ -9,6 +9,7 @@
 
 const CsvHandler = require("./CsvHandler");
 const SheetsCommunications = require("./SheetsCommunications");
+const FneCommunications = require("./FneCommunications");
 
 
 class AutoAcl {
@@ -36,12 +37,33 @@ class AutoAcl {
             response = response.filter(row => !row[0].includes('#'));
             csvHandler.write(this.server.RidAclPath, csvHandler.sheetAclToCsv(response).trim());
             this.logger.info("Saved " + response.length + " entry's to ACL", "AUTO ACL");
+
+            if(this.server.Sheets.autoUpdateFne){
+                this.updateFne();
+            }
         }, this.server.AutoAclInterval * 1000 * 60);
     }
 
     stop(){
         this.logger.info("Stopping Auto ACL", "AUTO ACL");
         clearInterval(this.intervalId);
+    }
+
+    updateFne() {
+        this.logger.info("Updating FNE", "AUTO ACL");
+        let fneCommunications = new FneCommunications(this.server, this.logger);
+
+        fneCommunications.forceUpdate()
+            .then(status => {
+                if (status) {
+                    this.logger.info("Updated FNE ACL", "AUTO ACL");
+                } else {
+                    this.logger.error("Failed to force update FNE", "AUTO ACL");
+                }
+            })
+            .catch(status => {
+                this.logger.error("Error updating FNE: " + status, "AUTO ACL");
+            });
     }
 }
 

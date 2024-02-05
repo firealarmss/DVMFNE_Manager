@@ -17,6 +17,7 @@ Servers:
 
     Sheets:
       enabled: true
+      autoUpdateFne: true
       sheetId: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       serviceAccountKeyFile: "configs/google.json"
       RidAcl:
