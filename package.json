@@ -6,7 +6,7 @@
   "bin": "index.js",
   "scripts": {
     "start": "node index.js -c configs/config.yml",
-    "build": "pkg . -o ./bin/fne2_tg_manager",
+    "build": "pkg . -o ./bin/dvmfne_manager",
     "build:linux": "pkg . --targets node18-linux-x64 -o ./bin/dvmfne_manager-linux",
     "build:win": "pkg . --targets node18-win-x64 -o ./bin/dvmfne_manager-win.exe",
     "build:mac": "pkg . --targets node18-macos-x64 -o ./bin/dvmfne_manager-mac",
@@ -31,12 +31,16 @@
   },
   "pkg": {
     "scripts": [
-      "*.js"
+      "*.js",
+      "modules/*.js",
+      "modules/**/*.js",
+      "modules/commands/*.js"
     ],
     "assets": [
       "views/*",
       "views/**/*",
       "modules/*",
+      "modules/**/*",
       "node_modules/*",
       "node_modules/**/*"
     ],

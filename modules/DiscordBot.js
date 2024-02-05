@@ -143,7 +143,7 @@ class DiscordBot {
                 { body: commands },
             );
 
-             this.logger.info('Successfully reloaded application commands', "DISCORD BOT");
+            this.logger.info('Successfully reloaded application commands', "DISCORD BOT");
         } catch (error) {
             console.error(error);
         }
