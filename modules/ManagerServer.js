@@ -364,6 +364,10 @@ class ManagerServer {
 
             res.sendStatus(200);
         });
+
+        this.app.get('*', function(req, res){
+            res.render('errors/404');
+        });
     }
 
     start() {
