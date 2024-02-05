@@ -59,9 +59,7 @@ class RESTClient {
                 data: payload
             });
 
-            if (this.debug) {
-                console.log(`REST Response: ${JSON.stringify(apiResponse.data)}`);
-            }
+            this.logger.dbug(`REST Response: ${JSON.stringify(apiResponse.data)}`);
 
             return apiResponse.data;
 

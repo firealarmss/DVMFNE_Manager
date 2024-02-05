@@ -29,6 +29,12 @@ Servers:
       token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       clientId: "00000000000000000"
       guildId: "111111111111111111"
+      channelNameStats:
+        enabled: true
+        affiliationChannelId: "0000000000000000"
+        affiliationInterval: 1
+        peerChannelId: "0000000000000000000000"
+        peerInterval: 2
 
     RulePath: "./tests/cfne_rules.yml"
     ConfigPath: "./tests/cfne_rules.yml"

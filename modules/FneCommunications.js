@@ -14,7 +14,18 @@ class FneCommunications {
     constructor(server, logger) {
         this.server = server;
         this.logger = logger;
-        this.restClient = new RESTClient(server.Rest.address, server.Rest.port, server.Rest.password, this.logger);
+        this.restClient = new RESTClient(server.Rest.address, server.Rest.port, server.Rest.password, false, this.logger);
+    }
+
+    async getRidAcl() {
+        try {
+            const response = await this.restClient.send('GET', '/rid/query', null);
+            if (response.status === 200) {
+                return response;
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
     }
 
     async forceUpdate(){
