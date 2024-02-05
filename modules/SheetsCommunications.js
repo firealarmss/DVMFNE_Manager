@@ -9,19 +9,25 @@
 
 const { google } = require('googleapis');
 
-const googleSheetClient = await getGoogleSheetClient();
-
 class SheetsCommunications {
-    constructor() {
+    constructor(serviceAccountKeyFile, sheetId) {
+        this.serviceAccountKeyFile = serviceAccountKeyFile;
 
+        this.sheetId = sheetId;
+
+        this.googleSheetClient = undefined;
     }
 
     async initialize() {
+        this.googleSheetClient = await this.getSheetClient();
     }
 
-    async getSheetTabs(googleSheetClient, sheetId) {
-        const res = await googleSheetClient.spreadsheets.get({
-            spreadsheetId: sheetId,
+    async getTabs() {
+        if (!this.googleSheetClient) {
+            await this.initialize();
+        }
+        const res = await this.googleSheetClient.spreadsheets.get({
+            spreadsheetId: this.sheetId,
             ranges: [],
             includeGridData: false,
         });
@@ -33,18 +39,26 @@ class SheetsCommunications {
         return tabs.filter(tab => !tabsToRemove.includes(tab));
     }
 
-    async readGoogleSheet(googleSheetClient, sheetId, tabName, range) {
-        const res = await googleSheetClient.spreadsheets.values.get({
-            spreadsheetId: sheetId,
-            range: `${tabName}!${range}`,
+    async read(range, tab) {
+        if (!this.googleSheetClient) {
+            await this.initialize();
+        }
+
+        const res = await this.googleSheetClient.spreadsheets.values.get({
+            spreadsheetId: this.sheetId,
+            range: `${tab}!${range}`,
         });
         return res.data.values;
     }
 
-    async writeGoogleSheet(googleSheetClient, sheetId, tabName, range, data) {
-        await googleSheetClient.spreadsheets.values.append({
-            spreadsheetId: sheetId,
-            range: `${tabName}!${range}`,
+    async write(range, data, tab) {
+        if (!this.googleSheetClient) {
+            await this.initialize();
+        }
+
+        await this.googleSheetClient.spreadsheets.values.append({
+            spreadsheetId: this.sheetId,
+            range: `${tab}!${range}`,
             valueInputOption: 'USER_ENTERED',
             insertDataOption: 'INSERT_ROWS',
             resource: {
@@ -54,10 +68,14 @@ class SheetsCommunications {
         })
     }
 
-    async updateGoogleSheet(googleSheetClient, sheetId, tabName, range, data) {
-        await googleSheetClient.spreadsheets.values.update({
-            spreadsheetId: sheetId,
-            range: `${tabName}!${range}`,
+    async updateSheet(range, data, tab) {
+        if (!this.googleSheetClient) {
+            await this.initialize();
+        }
+
+        await this.googleSheetClient.spreadsheets.values.update({
+            spreadsheetId: this.sheetId,
+            range: `${tab}!${range}`,
             valueInputOption: 'USER_ENTERED',
             resource: {
                 "majorDimension": "ROWS",
@@ -65,4 +83,18 @@ class SheetsCommunications {
             },
         });
     }
+
+    async getSheetClient() {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: this.serviceAccountKeyFile,
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+        const authClient = await auth.getClient();
+        return google.sheets({
+            version: 'v4',
+            auth: authClient,
+        });
+    }
 }
+
+module.exports = SheetsCommunications;

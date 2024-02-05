@@ -14,10 +14,11 @@ const path = require('path');
 const TgRulesHandler = require('./TgRulesHandler.js');
 const DbManager = require('./DbManager');
 const FneCommunications = require('./FneCommunications');
-const Logger = require('./Logger');
+const SheetsCommunications = require('./SheetsCommunications');
+const CsvHandler = require('./CsvHandler');
 
 class ManagerServer {
-    constructor(server, config, logger) {
+     constructor(server, config, logger) {
 
         this.config = config;
         this.server = server;
@@ -65,8 +66,30 @@ class ManagerServer {
 
         this.dbManager.initialize();
 
+        this.sheetsCommunications = new SheetsCommunications(this.server.Sheets.serviceAccountKeyFile, this.server.Sheets.sheetId);
+
         this.app.get('/', (req, res) => {
             res.render('system_landing');
+        });
+
+        this.app.get('/getRidSheet', async (req, res) => {
+            let response = await this.sheetsCommunications.read(this.server.Sheets.RidAcl.range, this.server.Sheets.RidAcl.tab);
+            response = response.filter(row => !row[0].includes('#'));
+
+            res.render('ridAclSheets', { ridAcl: response });
+        });
+
+        this.app.get('/pushRidAclToFne', this.isAuthenticated, async (req, res) => {
+            let csvHandler = new CsvHandler(this.logger);
+            let response = await this.sheetsCommunications.read(this.server.Sheets.RidAcl.range, this.server.Sheets.RidAcl.tab);
+
+            if (!response) {
+                res.sendStatus(500);
+            }
+
+            response = response.filter(row => !row[0].includes('#'));
+            csvHandler.write(this.server.RidAclPath, csvHandler.sheetAclToCsv(response).trim());
+            res.redirect('/?message=Pushed RID ACL to FNE');
         });
 
         this.app.get('/peerMapInclusions', this.isAuthenticated, (req, res) => {

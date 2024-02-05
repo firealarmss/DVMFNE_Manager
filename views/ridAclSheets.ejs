@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+<body>
+<script src="/public/js/fneUtils.js"></script>
+<div class="container mt-4">
+    <h2><%=name%> RID ACL</h2>
+ <!--   <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addTalkGroupModal">
+        Add RID
+    </button>
+
+    <div class="modal fade" id="addTalkGroupModal" tabindex="-1" role="dialog" aria-labelledby="addTalkGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTalkGroupModalLabel">Add New RID</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>RID:</label>
+                        <input type="text" class="form-control" id="newRid" />
+                    </div>
+                    <div class="form-group">
+                        <label>Enabled:</label>
+                        <select class="form-control" id="newEnabled">
+                            <option value="1">True</option>
+                            <option value="0">False</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="addRidToAcl()">Add RID</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>RID</th>
+            <th>Enabled</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%  ridAcl.forEach(rid => {
+        %>
+        <tr>
+            <td><%= rid[0] %></td>
+            <td><%= rid[1] ? "Yes" : "No" %></td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
