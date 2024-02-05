@@ -23,6 +23,7 @@ class ManagerServer {
         this.server = server;
 
         this.app = express();
+        this.initializedApp = null;
 
         this.logger = logger
 
@@ -366,8 +367,23 @@ class ManagerServer {
     }
 
     start() {
-        this.app.listen(this.port, this.ServerBindAddress, () => {
+        this.initializedApp = this.app.listen(this.port, this.ServerBindAddress, () => {
             this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
+        });
+    }
+
+    stop() {
+        this.initializedApp.close();
+        this.logger.info(`Stopped ${this.name}`, "MANAGER SERVER");
+    }
+
+    restart() {
+        this.initializedApp.close(() => {
+           this.logger.info(`Stopped ${this.name}; Restarting`, "MANAGER SERVER");
+
+            this.initializedApp = this.app.listen(this.port, this.ServerBindAddress, () => {
+                this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
+            });
         });
     }
 
