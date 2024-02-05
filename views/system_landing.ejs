@@ -36,11 +36,15 @@
                 <a class="btn btn-warning btn-lg" href="/restartFne" role="button"><i class="fas fa-redo"></i> Restart FNE</a>
                 <a class="btn btn-danger btn-lg" href="/stopFne" role="button"><i class="fas fa-stop"></i> Stop FNE</a>
                 <a class="btn btn-warning btn-lg" href="/fneForceUpdate" role="button"><i class="fas fa-sync-alt"></i> FNE Force Update</a>
-                <a class="btn btn-warning btn-lg" href="/pushRidAclToFne" role="button"><i class="fas fa-sync-alt"></i> Update ACL From Sheets</a>
+                <% if (sheets) {%>
+                    <a class="btn btn-warning btn-lg" href="/pushRidAclToFne" role="button"><i class="fas fa-sync-alt"></i> Update ACL From Sheets</a>
+                <%}%>
             </div>
 
             <div class="button-group">
-                <a class="btn btn-secondary btn-lg" href="/getRidSheet" role="button"><i class="fas fa-tachometer-alt"></i> Sheets ACL List</a>
+                <% if (sheets) {%>
+                    <a class="btn btn-secondary btn-lg" href="/getRidSheet" role="button"><i class="fas fa-tachometer-alt"></i> Sheets ACL List</a>
+                <%}%>
                 <a class="btn btn-secondary btn-lg" href="/fneStatus" role="button"><i class="fas fa-tachometer-alt"></i> FNE Status</a>
                 <a class="btn btn-secondary btn-lg" href="/logout" role="button"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>

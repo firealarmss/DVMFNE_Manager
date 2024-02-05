@@ -5,6 +5,8 @@ Servers:
   - name: "Centrunk"
     type: "CFNE" # FNE2 or CFNE
 
+    AutoAclInterval: 1 # 0 to disable. Time in minutes
+
     ServerPort: 3001
     ServerBindAddress: 0.0.0.0
 
@@ -12,6 +14,14 @@ Servers:
       address: "127.0.0.1"
       port: 9990
       password: "passw0rd"
+
+    Sheets:
+      enabled: true
+      sheetId: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      serviceAccountKeyFile: "configs/google.json"
+      RidAcl:
+        tab: "RID_ACL"
+        range: "A:B"
 
     RulePath: "./tests/cfne_rules.yml"
     ConfigPath: "./tests/cfne_rules.yml"
@@ -22,7 +32,7 @@ Servers:
     RestartCommand: "sudo systemctl restart cfne.service"
     StatusCommand: "sudo systemctl status cfne.service"
 
-  - name: "FNE2 is no longer support, but some features will work"
+  - name: "Some FNE2" # FNE2 is no longer support, but some features will work
     type: "FNE2" # FNE2 or CFNE
 
     ServerPort: 3000

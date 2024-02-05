@@ -61,6 +61,7 @@ class ManagerServer {
                 res.locals.user = null;
             }
             res.locals.name = this.name;
+            res.locals.sheets = this.server.Sheets.enabled;
             next();
         });
 
@@ -400,17 +401,20 @@ class ManagerServer {
     }
 
     stop() {
-        this.initializedApp.close();
-        this.logger.info(`Stopped ${this.name}`, "MANAGER SERVER");
+        this.initializedApp.close(() => {
+            this.logger.info(`Stopped ${this.name}`, "MANAGER SERVER");
+        });
     }
 
     restart() {
         this.initializedApp.close(() => {
-           this.logger.info(`Stopped ${this.name}; Restarting`, "MANAGER SERVER");
+            this.logger.info(`Stopped ${this.name}; Restarting`, "MANAGER SERVER");
 
-            this.initializedApp = this.app.listen(this.port, this.ServerBindAddress, () => {
-                this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
-            });
+            setTimeout(() => {
+                this.initializedApp = this.app.listen(this.port, this.ServerBindAddress, () => {
+                    this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
+                });
+            }, 1000);
         });
     }
 

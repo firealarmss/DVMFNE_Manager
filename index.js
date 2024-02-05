@@ -12,6 +12,7 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const TgManagerServer = require('./modules/ManagerServer');
 const Logger = require('./modules/Logger');
+const AutoAcl = require('./modules/AutoAcl');
 
 const argv = yargs
 
@@ -43,6 +44,7 @@ if (argv.config) {
 
     config.Servers.forEach((server) => {
         let logger = new Logger(config.debug, server.name, config.LogPath, 0);
+        let autoAcl = new AutoAcl(logger, server);
 
         if (server.type === "FNE2"){
             logger.warn("FNE2 is no longer support!", "CONFIG LOADER");
@@ -50,6 +52,10 @@ if (argv.config) {
         let app = new  TgManagerServer(server, config, logger);
 
         app.start();
+
+        if (server.AutoAclInterval && server.AutoAclInterval > 0) {
+            autoAcl.start();
+        }
     });
 
 } else {
