@@ -58,6 +58,56 @@ class DbManager {
                 this.logger.info('FNE table initialized', "DB MANAGER");
             }
         });
+
+        this.db.run(`CREATE TABLE IF NOT EXISTS peer_info (
+            peerId INTEGER PRIMARY KEY,
+            name TEXT,
+            email TEXT,
+            phone TEXT,
+            discordWebhookUrl TEXT
+        )`, (err) => {
+            if (err) {
+                this.logger.error('Error creating the peer_info table:' + err, "DB MANAGER");
+            } else {
+                this.logger.info('Peer info table initialized', "DB MANAGER");
+            }
+        });
+
+    }
+
+    updatePeerInfo(peerId, name, email, phone, discordWebhookUrl, callback) {
+        this.db.run(
+            `UPDATE peer_info SET name = ?, email = ?, phone = ?, discordWebhookUrl = ? WHERE peerId = ?`,
+            [name, email, phone, discordWebhookUrl, peerId],
+            (err) => {
+                callback(err);
+            }
+        );
+    }
+
+    addPeerInfo(peerId, name, email, phone, discordWebhookUrl, callback) {
+        this.db.run(`INSERT INTO peer_info (peerId, name, email, phone, discordWebhookUrl) VALUES (?, ?, ?, ?, ?)`,
+            [peerId, name, email, phone, discordWebhookUrl], (err) => {
+                callback(err);
+            });
+    }
+
+    deletePeerInfo(peerId, callback) {
+        this.db.run(`DELETE FROM peer_info WHERE peerId = ?`, [peerId], (err) => {
+            callback(err);
+        });
+    }
+
+    getPeerInfo(peerId, callback) {
+        this.db.get(`SELECT * FROM peer_info WHERE peerId = ?`, [peerId], (err, row) => {
+            callback(err, row);
+        });
+    }
+
+    getAllPeerInfos(callback) {
+        this.db.all(`SELECT * FROM peer_info`, [], (err, rows) => {
+            callback(err, rows);
+        });
     }
 
     addPeerMapInclusion(PeerMapInclusions, callback) {

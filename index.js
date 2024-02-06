@@ -14,6 +14,8 @@ const TgManagerServer = require('./modules/ManagerServer');
 const Logger = require('./modules/Logger');
 const AutoAcl = require('./modules/AutoAcl');
 const DiscordBot = require('./modules/DiscordBot');
+const PeerWatcher = require('./modules/PeerWatcher');
+const DbManager = require("./modules/DbManager");
 
 const argv = yargs
 
@@ -45,14 +47,20 @@ if (argv.config) {
 
     config.Servers.forEach((server) => {
         let logger = new Logger(config.debug, server.name, config.LogPath, 0);
+        let dbManager = new DbManager("./db/users.db", logger);
         let autoAcl = new AutoAcl(logger, server);
+        let peerWatcher = new PeerWatcher(logger, server, dbManager);
 
         if (server.type === "FNE2"){
             logger.warn("FNE2 is no longer supported!", "CONFIG LOADER");
         }
-        let app = new  TgManagerServer(server, config, logger);
+        let app = new  TgManagerServer(server, config, dbManager, logger);
 
         app.start();
+
+        if (server.PeerWatcher.Enabled) {
+            peerWatcher.start();
+        }
 
         if (server.Discord.enabled) {
             new DiscordBot(logger, server);

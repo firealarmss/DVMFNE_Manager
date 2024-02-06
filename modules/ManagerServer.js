@@ -18,7 +18,7 @@ const SheetsCommunications = require('./SheetsCommunications');
 const CsvHandler = require('./CsvHandler');
 
 class ManagerServer {
-     constructor(server, config, logger) {
+     constructor(server, config, dbManager, logger) {
 
         this.config = config;
         this.server = server;
@@ -26,9 +26,9 @@ class ManagerServer {
         this.app = express();
         this.initializedApp = null;
 
-        this.logger = logger
+        this.logger = logger;
 
-        this.dbManager = new DbManager("./db/users.db", this.logger);
+        this.dbManager = dbManager;
 
         this.port = server.ServerPort || 3000;
         this.name = server.name;
@@ -72,6 +72,56 @@ class ManagerServer {
         this.app.get('/', (req, res) => {
             res.render('system_landing');
         });
+
+        this.app.get('/manageWatchedPeers', async (req, res) => {
+            try {
+                this.dbManager.getAllPeerInfos((err, peers) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).send('Database error');
+                    }
+                    res.render('manageWatchedPeers', { peers });
+                });
+            } catch (error) {
+                console.error(error);
+                res.status(500).send('Server error');
+            }
+        });
+
+         this.app.post('/editWatchedPeer/:peerId', (req, res) => {
+             const peerId = req.params.peerId;
+             const { name, email, phone, discordWebhookUrl } = req.body;
+
+             this.dbManager.updatePeerInfo(peerId, name, email, phone, discordWebhookUrl, (err) => {
+                 if (err) {
+                     console.error(err);
+                     return res.status(500).send('Database error');
+                 }
+                 res.redirect('/manageWatchedPeers');
+             });
+         });
+
+         this.app.post('/deleteWatchedPeer/:peerId', (req, res) => {
+             const peerId = req.params.peerId;
+             this.dbManager.deletePeerInfo(peerId, (err) => {
+                 if (err) {
+                     console.error(err);
+                     return res.status(500).send('Database error');
+                 }
+                 res.redirect('/manageWatchedPeers');
+             });
+         });
+
+         this.app.post('/addWatchedPeer', (req, res) => {
+             const { peerId, name, email, phone, discordWebhookUrl } = req.body;
+             this.dbManager.addPeerInfo(peerId, name, email, phone, discordWebhookUrl, (err) => {
+                 if (err) {
+                     console.error(err);
+                     return res.status(500).send('Database error');
+                 }
+                 res.redirect('/manageWatchedPeers');
+             });
+         });
 
         this.app.get('/getRidSheet', async (req, res) => {
             let response = await this.sheetsCommunications.read(this.server.Sheets.RidAcl.range, this.server.Sheets.RidAcl.tab);
