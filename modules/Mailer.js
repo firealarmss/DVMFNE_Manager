@@ -7,17 +7,15 @@
  * LICENSE file that was distributed with this source code.
  */
 
-//This class is temporary until CFNE has a reporter of some sort.
-
-class PeerWatcher {
+class Mailer {
     constructor(logger, server) {
         this.logger = logger;
         this.server = server;
     }
 
-    start(){
-        this.logger.info("Started Peer Watcher", "PEER WATCHER");
+    send(subject, body, email){
+        this.logger.info(`Send email ${subject} and body ${body} to ${email}`);
     }
 }
 
-module.exports = PeerWatcher;
+module.exports = Mailer;
