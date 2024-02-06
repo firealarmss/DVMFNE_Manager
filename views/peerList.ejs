@@ -15,6 +15,7 @@
             <option value="asc">Peer ID (Ascending)</option>
             <option value="desc">Peer ID (Descending)</option>
             <option value="connState">Connection State</option>
+            <option value="software">Software Type</option>
         </select>
         <button id="sortButton" class="btn btn-primary mt-2">Sort</button>
     </div>
@@ -95,6 +96,8 @@
                 const idB = parseInt(rowB.cells[2].textContent);
                 const connStateA = rowA.cells[1].getAttribute('data-connState');
                 const connStateB = rowB.cells[1].getAttribute('data-connState');
+                const softwareA = rowA.cells[7].textContent.trim().toLowerCase();
+                const softwareB = rowB.cells[7].textContent.trim().toLowerCase();
 
                 switch (sortMethod) {
                     case 'asc':
@@ -104,6 +107,10 @@
                     case 'connState':
                         if (connStateA < connStateB) return -1;
                         if (connStateA > connStateB) return 1;
+                        return 0;
+                    case 'software':
+                        if (softwareA < softwareB) return -1;
+                        if (softwareA > softwareB) return 1;
                         return 0;
                 }
             });
