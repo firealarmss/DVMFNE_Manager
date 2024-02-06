@@ -32,20 +32,23 @@
             attribution: '© OpenStreetMap contributors and Caleb, KO4UYJ'
         }).addTo(map);
 
-        peers.forEach(peer => {
-            if (!peer.config.info) {
-                console.warn(`Skipped peer with no info: ${peer.peerId}; Peer has the following connection state: ${netConnectionStatus[parseInt(peer.connectionState)]}`);
-                return;
-            }
+        peers.forEach(group => {
+            const marker = L.marker([parseFloat(group.latitude), parseFloat(group.longitude)]).addTo(map);
+            let popupContent = '';
+            group.peers.forEach(peer => {
+                popupContent += `<b>${group.location}</b><br>Peer ID: ${peer.peerId}<br>RX Frequency: ${(peer.config.rxFrequency / 1e6).toFixed(4)}MHz<br>TX Frequency: ${(peer.config.txFrequency / 1e6).toFixed(4)}MHz<br><br>`;
+            });
 
-            const { latitude, longitude, location } = peer.config.info;
-            if (latitude && longitude) {
-                const marker = L.marker([latitude, longitude]).addTo(map);
-                marker.bindPopup(`<b>${location}</b><br />Peer ID: ${peer.peerId}<br />RX Frequency: ${(peer.config.rxFrequency / 1e6).toFixed(4)}MHz<br />TX Frequency: ${(peer.config.txFrequency / 1e6).toFixed(4)}MHz<br />`);
-            }
+            marker.bindPopup(popupContent, {
+                maxHeight: 200,
+                autoPan: true,
+                closeButton: true,
+                autoPanPaddingTopLeft: L.point(40, 40),
+                autoPanPaddingBottomRight: L.point(40, 40)
+            });
+
         });
     });
 </script>
-
 </body>
 </html>

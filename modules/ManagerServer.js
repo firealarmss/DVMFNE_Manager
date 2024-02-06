@@ -205,6 +205,7 @@ class ManagerServer {
                 res.send("Error getting peer list");
                 return;
             }
+
             this.dbManager.getAllPeerMapInclusions((err, inclusions) => {
                 if (err) {
                     res.send("Error retrieving inclusions");
@@ -215,9 +216,32 @@ class ManagerServer {
                         response.peers :
                         response.peers.filter(peer => peerMapInclusionSet.has(String(peer.peerId).trim()));
 
+                    const groupedPeers = filteredPeers.reduce((acc, peer) => {
+                        if (!peer.config.info || !peer.config.info.latitude || !peer.config.info.longitude) {
+                            console.warn(`Skipped peer with incomplete info: ${peer.peerId}`);
+                            return acc;
+                        }
+
+                        const lat = peer.config.info.latitude.toFixed(4); // 4 decimal places
+                        const lng = peer.config.info.longitude.toFixed(4); // 4 decimal places
+                        const key = `${lat},${lng}`;
+
+                        if (!acc[key]) {
+                            acc[key] = {
+                                latitude: lat,
+                                longitude: lng,
+                                location: peer.config.info.location,
+                                peers: []
+                            };
+                        }
+
+                        acc[key].peers.push(peer);
+                        return acc;
+                    }, {});
+
                     res.render('peerMap', {
                         name: this.name,
-                        peers: filteredPeers,
+                        peers: Object.values(groupedPeers),
                         PeerMapInclusions: inclusions,
                     });
                 }
