@@ -8,6 +8,16 @@
 <div class="container mt-4">
     <h2><%=name%> Peers</h2>
     <h4>Peer Count: <%=peers.length%></h4>
+    <input type="text" id="peerIdSearch" placeholder="Filter by Peer ID" class="form-control mb-3">
+    <div class="mb-3">
+        <label for="sortingMethod" class="form-label">Sort by:</label>
+        <select id="sortingMethod" class="form-select">
+            <option value="asc">Peer ID (Ascending)</option>
+            <option value="desc">Peer ID (Descending)</option>
+            <option value="connState">Connection State</option>
+        </select>
+        <button id="sortButton" class="btn btn-primary mt-2">Sort</button>
+    </div>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -48,5 +58,63 @@
         </tbody>
     </table>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('peerIdSearch');
+        const tableBody = document.querySelector('tbody');
+        const tableRows = document.querySelectorAll('tbody tr');
+
+        searchInput.addEventListener('input', () => {
+            const searchValue = searchInput.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const peerIdCell = row.querySelector('td:nth-child(3)');
+                if (peerIdCell) {
+                    const peerId = peerIdCell.textContent.toLowerCase();
+                    if (peerId.includes(searchValue)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        const sortingMethodSelect = document.getElementById('sortingMethod');
+        const sortButton = document.getElementById('sortButton');
+
+        sortButton.addEventListener('click', () => {
+            sortTable(sortingMethodSelect.value);
+        });
+
+        function sortTable(sortMethod) {
+            const rowsArray = Array.from(tableRows);
+
+            rowsArray.sort((rowA, rowB) => {
+                const idA = parseInt(rowA.cells[2].textContent);
+                const idB = parseInt(rowB.cells[2].textContent);
+                const connStateA = rowA.cells[1].getAttribute('data-connState');
+                const connStateB = rowB.cells[1].getAttribute('data-connState');
+
+                switch (sortMethod) {
+                    case 'asc':
+                        return idA - idB;
+                    case 'desc':
+                        return idB - idA;
+                    case 'connState':
+                        if (connStateA < connStateB) return -1;
+                        if (connStateA > connStateB) return 1;
+                        return 0;
+                }
+            });
+
+            rowsArray.forEach(row => {
+                tableBody.appendChild(row);
+            });
+        }
+
+        sortTable('asc');
+    });
+</script>
 </body>
 </html>
