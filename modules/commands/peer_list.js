@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, AttachmentBuilder, EmbedBuilder } = require('discord.js');
 const FneCommunications = require('../FneCommunications');
 
 module.exports = (server, logger) => {
@@ -8,7 +8,7 @@ module.exports = (server, logger) => {
     const netConnectionStatus = Object.freeze({
         0: { text: "Waiting Connection", icon: "⏳" },
         1: { text: "Waiting Login", icon: "🔑" },
-        2: { text: "Waiting Auth", icon: "🔓" }, // Changed to unlock symbol
+        2: { text: "Waiting Auth", icon: "🔓" },
         3: { text: "Waiting Config", icon: "⚙️" },
         4: { text: "Running", icon: "✅" },
         5: { text: "RPTL Received", icon: "📩" },
@@ -57,34 +57,35 @@ module.exports = (server, logger) => {
                     await interaction.reply({content: `Peer ID ${peerId} not found.`, ephemeral: true});
                 }
             } else {
-                let currentMessage = '';
-                const messagesToSend = [];
+                const embeds = [];
+                let embed = new EmbedBuilder()
+                    .setColor('#0099ff')
+                    .setTitle('Peer List')
+                    .setDescription(`Showing current connected peers. Peer count: ${response.peers.length}`)
+                    .setTimestamp();
 
-                response.peers.forEach(peer => {
-                    const peerMessage = generatePeerMessage(peer);
+                response.peers.forEach((peer, index) => {
+                    let connectionState = peer.connectionState;
+                    let status = netConnectionStatus[connectionState] || netConnectionStatus[0x7FFFFFF];
+                    const peerInfo = `Connection State: ${status.icon} ${status.text}`;
 
-                    if ((currentMessage.length + peerMessage.length + 1) > MAX_MESSAGE_LENGTH) {
-                        messagesToSend.push(currentMessage);
-                        currentMessage = peerMessage;
-                    } else {
-                        currentMessage += (currentMessage.length > 0 ? '\n' : '') + peerMessage;
+                    if (index !== 0 && index % 25 === 0) {
+                        embeds.push(embed);
+                        embed = new EmbedBuilder()
+                            .setColor('#0099ff')
+                            .setTitle(`Peer List (cont'd)`)
+                            .setTimestamp();
                     }
+                    embed.addFields({ name: `Peer ID: ${peer.peerId}`, value: peerInfo, inline: true });
                 });
 
-                if (currentMessage.length > 0) {
-                    messagesToSend.push(currentMessage);
-                }
+                embeds.push(embed);
 
-                if (messagesToSend.length > 0) {
-                    const channel = interaction.channel;
-                    await interaction.reply('Sending Peer list. Peer count: ' + response.peers.length);
-                    await channel.send({content: messagesToSend[0], files: []});
+                await interaction.reply({ embeds: [embeds[0]] });
 
-                    for (let i = 1; i < messagesToSend.length; i++) {
-                        await channel.send({content: messagesToSend[i], files: []});
-                    }
-                } else {
-                    await interaction.reply({content: "No peers to display.", ephemeral: true});
+                const channel = interaction.channel;
+                for (let i = 1; i < embeds.length; i++) {
+                    await channel.send({ embeds: [embeds[i]] });
                 }
             }
         }

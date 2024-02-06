@@ -28,43 +28,55 @@ module.exports = (server, logger) => {
                 return;
             }
 
-            const embed = createAffiliationEmbed(response.affiliations);
-            interaction.reply({ embeds: [embed] });
+            const embeds = createAffiliationEmbed(response.affiliations);
+            await interaction.reply({ embeds: [embeds[0]] });
+
+            for (let i = 1; i < embeds.length; i++) {
+                await interaction.channel.send({ embeds: [embeds[i]] });
+            }
         }
     };
 
     function createAffiliationEmbed(affiliations) {
-        const embed = new EmbedBuilder()
+        const embeds = [];
+        let embed = new EmbedBuilder()
             .setColor('#0099ff')
             .setTitle('Peer Affiliations')
             .setDescription(`Showing affiliations for ${affiliations.length} peers.`)
             .setTimestamp();
 
-        let fieldsToAdd = [];
+        let affiliationText = '';
+        let affiliationCount = 0;
 
         affiliations.forEach(peer => {
-            if (fieldsToAdd.length < 25) {
-                let fieldValue = '';
-                peer.affiliations.forEach(affiliation => {
-                    const line = `DST ID: ${affiliation.dstId}, SRC ID: ${affiliation.srcId}\n`;
-                    if (fieldValue.length + line.length < 1024) {
-                        fieldValue += line;
+            peer.affiliations.forEach(affiliation => {
+                const newLine = `Peer ID: ${peer.peerId}, DST ID: ${affiliation.dstId}, SRC ID: ${affiliation.srcId}\n`;
+                if ((affiliationText.length + newLine.length) > 1024 || affiliationCount >= 25) {
+                    embed.addFields({ name: `Affiliations`, value: affiliationText, inline: false });
+                    affiliationText = newLine;
+                    affiliationCount = 1;
+
+                    if (affiliationCount === 25) {
+                        embeds.push(embed);
+                        embed = new EmbedBuilder()
+                            .setColor('#0099ff')
+                            .setTitle('Peer Affiliations (cont\'d)')
+                            .setTimestamp();
+                        affiliationCount = 0;
                     }
-                });
-
-                if (fieldValue === '') {
-                    fieldValue = 'No affiliations';
+                } else {
+                    affiliationText += newLine;
+                    affiliationCount++;
                 }
-
-                fieldsToAdd.push({ name: `Peer ID: ${peer.peerId}`, value: fieldValue, inline: false });
-            }
+            });
         });
 
-        if (fieldsToAdd.length > 0) {
-            embed.addFields(fieldsToAdd);
+        if (affiliationText.length > 0) {
+            embed.addFields({ name: `Affiliations`, value: affiliationText, inline: false });
         }
 
-        return embed;
+        embeds.push(embed);
+        return embeds;
     }
 
     // Old method for sending affiliations as a message. Keeping around for now
