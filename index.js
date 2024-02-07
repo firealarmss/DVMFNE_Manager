@@ -46,7 +46,7 @@ if (argv.config) {
     console.log(`DVMFNE Manager\n\nDebug: ${config.Debug}\nLog Path: ${LogPath}\nLoaded: ${config.Servers.length} servers\n`);
 
     config.Servers.forEach((server) => {
-        let logger = new Logger(config.debug, server.name, config.LogPath, 0);
+        let logger = new Logger(config.Debug, server.name, config.LogPath, 0);
         let dbManager = new DbManager("./db/users.db", logger);
         let autoAcl = new AutoAcl(logger, server);
         let peerWatcher = new PeerWatcher(logger, server, dbManager);

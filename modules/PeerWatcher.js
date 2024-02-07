@@ -9,6 +9,7 @@
 
 const FneCommunications = require("./FneCommunications");
 const Mailer = require("./Mailer");
+const DiscordWebhook = require("./DiscordWebhook");
 
 // Many parts of this class is temporary until CFNE has a reporter of some sort.
 
@@ -21,8 +22,13 @@ class PeerWatcher {
         this.currentPeers = [];
         this.lastKnownPeerStates = {};
         this.fneCommunications = new FneCommunications(server, logger);
+
         if (this.server.Mailer.enabled) {
             this.mailer = new Mailer(logger, server);
+        }
+
+        if (this.server.Discord.Webhook.enabled) {
+            this.discordWebhook = new DiscordWebhook(logger, server);
         }
         this.intervalId = undefined;
     }
@@ -83,13 +89,10 @@ class PeerWatcher {
             if (peer && peerInfo) {
                 newState = peer.connected ? 1 : 0;
                 if (peer.connected) {
-                    this.logger.info(`Peer ${peerId} (${peerInfo.name}) is connected.`, "PEER WATCHER");
-                } else {
-                    this.logger.info(`Peer ${peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`, "PEER WATCHER");
+                    this.logger.dbug(`Peer ${peerId} (${peerInfo.name}) is connected.`, "PEER WATCHER");
                 }
             } else {
                 newState = 0;
-                this.logger.info(`Peer ${peerId} (${peerInfo.name}) not connected or peer information is not available.`, "PEER WATCHER");
             }
 
             if (this.lastKnownPeerStates[peerId] === 1 && newState === 0) {
@@ -102,7 +105,7 @@ class PeerWatcher {
                 if (err) {
                     this.logger.error(`Error updating connection state for ${peerId}: ${err}`, "PEER WATCHER");
                 } else {
-                    this.logger.info(`Updated connection state for ${peerId} to ${newState}`, "PEER WATCHER");
+                    this.logger.dbug(`Updated connection state for ${peerId} to ${newState}`, "PEER WATCHER");
                 }
             });
         });
@@ -111,11 +114,17 @@ class PeerWatcher {
     async sendAlert(peerInfo, peer, type) {
         if (this.server.Mailer.enabled) {
             if (peer) {
+                this.logger.info(`Peer ${peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`, "PEER WATCHER");
                 await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type} with state: ${peer.connectionState}`, peerInfo.email);
             } else {
+                this.logger.info(`Peer ${peerId} (${peerInfo.name}) not connected or peer information is not available.`, "PEER WATCHER");
                 await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type}`, peerInfo.email);
-
             }
+        }
+
+        if (this.server.Discord.Webhook.enabled){
+            const message = this.discordWebhook.createPeerAlert(peerInfo, peer);
+            this.discordWebhook.send(message, peerInfo.discordWebhookUrl);
         }
     }
 }

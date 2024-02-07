@@ -29,7 +29,7 @@ Servers:
 
     Sheets:
       enabled: false
-      autoUpdateFne: true
+      autoUpdateFne: false
       sheetId: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       serviceAccountKeyFile: "configs/google.json"
       RidAcl:
@@ -42,11 +42,14 @@ Servers:
       clientId: "00000000000000000"
       guildId: "111111111111111111"
       channelNameStats:
-        enabled: true
+        enabled: false
         affiliationChannelId: "0000000000000000"
         affiliationInterval: 1
         peerChannelId: "0000000000000000000000"
         peerInterval: 2
+      Webhook:
+        enabled: false
+        url: "https://discord.com/" # Not used in PeerWatcher
 
     RulePath: "./tests/cfne_rules.yml"
     ConfigPath: "./tests/cfne_rules.yml"

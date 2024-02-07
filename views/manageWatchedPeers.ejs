@@ -2,6 +2,21 @@
 <html lang="en">
 <head>
     <%- include('partials/head.ejs') %>
+    <style>
+        .truncate {
+            display: inline-block;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+        }
+
+        .truncate[title] {
+            cursor: help;
+            border-bottom: 1px dotted;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -32,7 +47,11 @@
                 <td><%= peer.name %></td>
                 <td><%= peer.email %></td>
                 <td><%= peer.phone %></td>
-                <td><%= peer.discordWebhookUrl %></td>
+                <td>
+                    <span class="truncate" title="<%= peer.discordWebhookUrl %>">
+                        <%= peer.discordWebhookUrl %>
+                    </span>
+                </td>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm edit-btn" data-toggle="modal" data-target="#editPeerModal" data-peerid="<%= peer.peerId %>" data-name="<%= peer.name %>" data-email="<%= peer.email %>" data-phone="<%= peer.phone %>" data-discordwebhookurl="<%= peer.discordWebhookUrl %>">Edit</button>
 
