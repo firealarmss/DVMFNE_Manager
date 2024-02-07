@@ -51,6 +51,10 @@ Servers:
         enabled: false
         url: "https://discord.com/" # Not used in PeerWatcher
 
+    Telegram:
+      enabled: false
+      token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
     RulePath: "./tests/cfne_rules.yml"
     ConfigPath: "./tests/cfne_rules.yml"
 

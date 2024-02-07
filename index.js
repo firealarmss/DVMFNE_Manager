@@ -17,6 +17,7 @@ const DiscordBot = require('./modules/DiscordBot');
 const PeerWatcher = require('./modules/PeerWatcher');
 const DbManager = require("./modules/DbManager");
 const TwilioInboundMessageServer = require('./modules/TwilioInboundMessageServer');
+const TelegramBot = require('./modules/TelegramBot');
 
 const argv = yargs
 
@@ -53,6 +54,7 @@ if (argv.config) {
         let autoAcl = new AutoAcl(logger, server);
         let peerWatcher = new PeerWatcher(logger, server, dbManager);
         let twilioInboundMessageServer = new TwilioInboundMessageServer(logger, server);
+        let telegramBot = new TelegramBot(logger, server);
 
         if (server.type === "FNE2"){
             logger.warn("FNE2 is no longer supported!", "CONFIG LOADER");
@@ -70,6 +72,10 @@ if (argv.config) {
 
         if (server.Discord.enabled) {
             new DiscordBot(logger, server);
+        }
+
+        if (server.Telegram && server.Telegram.enabled) {
+            telegramBot.start();
         }
 
         if (server.AutoAclInterval && server.AutoAclInterval > 0) {
