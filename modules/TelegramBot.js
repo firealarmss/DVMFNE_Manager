@@ -9,6 +9,19 @@
 
 const TelegramBot = require('node-telegram-bot-api');
 const FneCommunications = require('./FneCommunications');
+const {EmbedBuilder} = require("discord.js");
+
+const netConnectionStatus = Object.freeze({
+    0: { text: "Waiting Connection", icon: "⏳" },
+    1: { text: "Waiting Login", icon: "🔑" },
+    2: { text: "Waiting Auth", icon: "🔓" },
+    3: { text: "Waiting Config", icon: "⚙️" },
+    4: { text: "Running", icon: "✅" },
+    5: { text: "RPTL Received", icon: "📩" },
+    6: { text: "Challenge Sent", icon: "🥊" },
+    7: { text: "MST Running", icon: "🚀" },
+    0x7FFFFFF: { text: "NET_STAT_INVALID", icon: "❌" }
+});
 
 class TelegramBotManager {
     constructor(logger, server) {
@@ -16,6 +29,12 @@ class TelegramBotManager {
         this.server = server;
 
         this.bot = undefined;
+    }
+
+    generatePeerMessage (peer) {
+        let connectionState = peer.connectionState;
+        let status = netConnectionStatus[connectionState] || netConnectionStatus[0x7FFFFFF];
+        return `🔗 Peer ID: ${peer.peerId}, Connection State: ${status.icon} ${status.text}\n`;
     }
 
     start() {
@@ -41,7 +60,8 @@ class TelegramBotManager {
 
                 if (!peerResponse || !affResponse) {
                     this.bot.sendMessage(chatId, `Error getting peer or aff list`)
-                        .then(r => {})
+                        .then(r => {
+                        })
                         .catch(e => {
                             this.logger.error(e, 'TELEGRAM BOT');
                         });
@@ -55,6 +75,44 @@ class TelegramBotManager {
                 });
 
                 this.bot.sendMessage(chatId, `${this.server.name} Stats:\n\n Peers: ${peerResponse.peers.length}\nAffiliations: ${affiliationCount}`)
+                    .then(r => {
+                    })
+                    .catch(e => {
+                        this.logger.error(e, 'TELEGRAM BOT');
+                    });
+            } else if (messageText === '/peer_list') {
+                let fneCommunications = new FneCommunications(this.server, this.logger);
+                let peerResponse = await fneCommunications.getFnePeerList();
+                let peerMessage = "";
+
+                if (!peerResponse) {
+                    this.bot.sendMessage(chatId, `Error getting peer list`)
+                        .then(r => {
+                        })
+                        .catch(e => {
+                            this.logger.error(e, 'TELEGRAM BOT');
+                        });
+                    return;
+                }
+
+                await peerResponse.peers.forEach((peer, index) => {
+                    peerMessage += this.generatePeerMessage(peer);
+                });
+
+                this.bot.sendMessage(chatId, `${this.server.name} Peer List:\n\n${peerMessage}`)
+                    .then(r => {
+                    })
+                    .catch(e => {
+                        this.logger.error(e, 'TELEGRAM BOT');
+                    });
+            } else if (messageText === '/help') {
+                this.bot.sendMessage(chatId, `Available commands:\n\n/stats - Get current stats\n/peer_list - Get current peer list\n/help - Show this message`)
+                    .then(r => {})
+                    .catch(e => {
+                        this.logger.error(e, 'TELEGRAM BOT');
+                    });
+            } else {
+                this.bot.sendMessage(chatId, `Command not found`)
                     .then(r => {})
                     .catch(e => {
                         this.logger.error(e, 'TELEGRAM BOT');
