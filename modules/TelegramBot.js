@@ -105,8 +105,27 @@ class TelegramBotManager {
                     .catch(e => {
                         this.logger.error(e, 'TELEGRAM BOT');
                     });
+            } else if (messageText === '/affiliations') {
+                let fneCommunications = new FneCommunications(this.server, this.logger);
+                let affResponse = await fneCommunications.getFneAffiliationList();
+                let affMessage = "";
+                let affiliationCount = 0;
+
+                affResponse.affiliations.forEach(peer => {
+                    peer.affiliations.forEach(affiliation => {
+                        affMessage += `Peer ID: ${peer.peerId}, DST ID: ${affiliation.dstId}, SRC ID: ${affiliation.srcId}\n`;
+                        affiliationCount++;
+                    });
+                });
+
+                this.bot.sendMessage(chatId, `${this.server.name} Affiliations: (${affiliationCount})\n\n${affMessage}`)
+                    .then(r => {})
+                    .catch(e => {
+                        this.logger.error(e, 'TELEGRAM BOT');
+                    });
             } else if (messageText === '/help') {
-                this.bot.sendMessage(chatId, `Available commands:\n\n/stats - Get current stats\n/peer_list - Get current peer list\n/help - Show this message`)
+                this.bot.sendMessage(chatId, `Available commands:\n\n/stats - Get current stats\n/peer_list - Get current peer list\n/affiliations - View current affiliations
+                 \n/help - Show this message`)
                     .then(r => {})
                     .catch(e => {
                         this.logger.error(e, 'TELEGRAM BOT');
