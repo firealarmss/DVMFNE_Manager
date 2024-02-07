@@ -114,10 +114,10 @@ class PeerWatcher {
     async sendAlert(peerInfo, peer, type) {
         if (this.server.Mailer.enabled) {
             if (peer) {
-                this.logger.info(`Peer ${peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`, "PEER WATCHER");
+                this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`, "PEER WATCHER");
                 await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type} with state: ${peer.connectionState}`, peerInfo.email);
             } else {
-                this.logger.info(`Peer ${peerId} (${peerInfo.name}) not connected or peer information is not available.`, "PEER WATCHER");
+                this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) not connected or peer information is not available.`, "PEER WATCHER");
                 await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type}`, peerInfo.email);
             }
         }
