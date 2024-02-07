@@ -16,6 +16,7 @@ const AutoAcl = require('./modules/AutoAcl');
 const DiscordBot = require('./modules/DiscordBot');
 const PeerWatcher = require('./modules/PeerWatcher');
 const DbManager = require("./modules/DbManager");
+const TwilioInboundMessageServer = require('./modules/TwilioInboundMessageServer');
 
 const argv = yargs
 
@@ -48,15 +49,20 @@ if (argv.config) {
     config.Servers.forEach((server) => {
         let logger = new Logger(config.Debug, server.name, config.LogPath, 0);
         let dbManager = new DbManager("./db/users.db", logger);
+        let app = new  TgManagerServer(server, config, dbManager, logger);
         let autoAcl = new AutoAcl(logger, server);
         let peerWatcher = new PeerWatcher(logger, server, dbManager);
+        let twilioInboundMessageServer = new TwilioInboundMessageServer(logger, server);
 
         if (server.type === "FNE2"){
             logger.warn("FNE2 is no longer supported!", "CONFIG LOADER");
         }
-        let app = new  TgManagerServer(server, config, dbManager, logger);
 
         app.start();
+
+        if (server.Twilio && server.Twilio.enabled && server.Twilio.inbound) {
+            twilioInboundMessageServer.start();
+        }
 
         if (server.PeerWatcher && server.PeerWatcher.enabled) {
             peerWatcher.start();
