@@ -58,7 +58,7 @@ if (argv.config) {
 
         app.start();
 
-        if (server.PeerWatcher && server.PeerWatcher.Enabled) {
+        if (server.PeerWatcher && server.PeerWatcher.enabled) {
             peerWatcher.start();
         }
 

@@ -8,8 +8,9 @@
  */
 
 const FneCommunications = require("./FneCommunications");
+const Mailer = require("./Mailer");
 
-//This class is temporary until CFNE has a reporter of some sort.
+// Many parts of this class is temporary until CFNE has a reporter of some sort.
 
 class PeerWatcher {
     constructor(logger, server, dbManager) {
@@ -18,7 +19,11 @@ class PeerWatcher {
         this.dbManager = dbManager;
 
         this.currentPeers = [];
+        this.lastKnownPeerStates = {};
         this.fneCommunications = new FneCommunications(server, logger);
+        if (this.server.Mailer.enabled) {
+            this.mailer = new Mailer(logger, server);
+        }
         this.intervalId = undefined;
     }
 
@@ -43,7 +48,7 @@ class PeerWatcher {
                     await this.checkPeerStatus(parseInt(peerId));
                 });
             });
-        }, 5000);
+        }, this.server.PeerWatcher.interval * 1000 * 60);
 
         this.logger.info("Started Peer Watcher", "PEER WATCHER");
     }
@@ -68,22 +73,50 @@ class PeerWatcher {
     async checkPeerStatus(peerId) {
         const peer = this.currentPeers.find(p => p.peerId === peerId);
 
-        this.dbManager.getPeerInfo(peerId, (err, peerInfo) => {
+        this.dbManager.getPeerInfo(peerId, async (err, peerInfo) => {
             if (err) {
                 this.logger.error(`Error fetching peer info for ${peerId}: ${err}`, "PEER WATCHER");
                 return;
             }
 
+            let newState;
             if (peer && peerInfo) {
+                newState = peer.connected ? 1 : 0;
                 if (peer.connected) {
-                    console.log(`Peer ${peerId} (${peerInfo.name}) is connected.`);
+                    this.logger.info(`Peer ${peerId} (${peerInfo.name}) is connected.`, "PEER WATCHER");
                 } else {
-                    console.log(`Peer ${peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`);
+                    this.logger.info(`Peer ${peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`, "PEER WATCHER");
                 }
             } else {
-                console.log(`Peer ${peerId} (${peerInfo.name}) not connected or peer information is not available.`);
+                newState = 0;
+                this.logger.info(`Peer ${peerId} (${peerInfo.name}) not connected or peer information is not available.`, "PEER WATCHER");
             }
+
+            if (this.lastKnownPeerStates[peerId] === 1 && newState === 0) {
+                await this.sendAlert(peerInfo, peer, newState === 1 ? "connected" : "disconnected");
+            }
+
+            this.lastKnownPeerStates[peerId] = newState;
+
+            this.dbManager.changePeerConnectionState(peerId, newState, (err) => {
+                if (err) {
+                    this.logger.error(`Error updating connection state for ${peerId}: ${err}`, "PEER WATCHER");
+                } else {
+                    this.logger.info(`Updated connection state for ${peerId} to ${newState}`, "PEER WATCHER");
+                }
+            });
         });
+    }
+
+    async sendAlert(peerInfo, peer, type) {
+        if (this.server.Mailer.enabled) {
+            if (peer) {
+                await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type} with state: ${peer.connectionState}`, peerInfo.email);
+            } else {
+                await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type}`, peerInfo.email);
+
+            }
+        }
     }
 }
 

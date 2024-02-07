@@ -64,7 +64,8 @@ class DbManager {
             name TEXT,
             email TEXT,
             phone TEXT,
-            discordWebhookUrl TEXT
+            discordWebhookUrl TEXT,
+            connectionState INTEGER
         )`, (err) => {
             if (err) {
                 this.logger.error('Error creating the peer_info table:' + err, "DB MANAGER");
@@ -73,6 +74,24 @@ class DbManager {
             }
         });
 
+        // had to add for existing db's that update
+        this.db.run(`ALTER TABLE peer_info ADD COLUMN connectionState INTEGER`, (err) => {
+            if (err && !err.message.includes('duplicate column name')) {
+                this.logger.error('Error adding connectionState column to the peer_info table:' + err, "DB MANAGER");
+            } else {
+                this.logger.info('connectionState column added to the peer_info table or already exists', "DB MANAGER");
+            }
+        });
+    }
+
+    changePeerConnectionState(peerId, connectionState, callback) {
+        this.db.run(
+            `UPDATE peer_info SET connectionState = ? WHERE peerId = ?`,
+            [connectionState, peerId],
+            (err) => {
+                callback(err);
+            }
+        );
     }
 
     updatePeerInfo(peerId, name, email, phone, discordWebhookUrl, callback) {

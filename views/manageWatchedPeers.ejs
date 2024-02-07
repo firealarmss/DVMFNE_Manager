@@ -12,6 +12,7 @@
         <thead>
         <tr>
             <th>Peer ID</th>
+            <th>Connection State</th>
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
@@ -20,9 +21,14 @@
         </tr>
         </thead>
         <tbody>
-        <% peers.forEach(function(peer) { %>
-            <tr>
+        <%
+            let trClass;
+            peers.forEach(function(peer) {
+                trClass = peer.connectionState ? "table-success" : "table-danger";
+        %>
+            <tr class="<%=trClass%>">
                 <td><%= peer.peerId %></td>
+                <td><%= peer.connectionState ? "Connected" : "Disconnected"%></td>
                 <td><%= peer.name %></td>
                 <td><%= peer.email %></td>
                 <td><%= peer.phone %></td>

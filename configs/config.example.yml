@@ -15,6 +15,18 @@ Servers:
       port: 9990
       password: "passw0rd"
 
+    PeerWatcher:
+      enabled: false
+      interval: 5 # Time in minutes
+
+    Mailer:
+      enabled: false
+      fromEmail: "test@example.com"
+      SocketLabs:
+        enabled: false
+        serverId: "123456"
+        injectionApi: "xxxxxxxxxxxxxxxxxx"
+
     Sheets:
       enabled: false
       autoUpdateFne: true
