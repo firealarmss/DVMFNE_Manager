@@ -73,7 +73,7 @@ class ManagerServer {
             res.render('system_landing');
         });
 
-        this.app.get('/manageWatchedPeers', async (req, res) => {
+        this.app.get('/manageWatchedPeers', this.isAuthenticated, async (req, res) => {
             try {
                 this.dbManager.getAllPeerInfos((err, peers) => {
                     if (err) {
