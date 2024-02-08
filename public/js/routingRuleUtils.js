@@ -1,5 +1,5 @@
 /**
- * This file is part of the fne2 tg manager project.
+ * This file is part of the DVMFNE Manager project.
  *
  * (c) 2024 Caleb <ko4uyj@gmail.com>
  *

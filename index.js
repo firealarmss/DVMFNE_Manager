@@ -1,5 +1,5 @@
 /**
- * This file is part of the fne2 tg manager project.
+ * This file is part of the DVMFNE Manager project.
  *
  * (c) 2024 Caleb <ko4uyj@gmail.com>
  *
@@ -88,7 +88,6 @@ if (argv.config) {
             autoAcl.start();
         }
     });
-
 } else {
     console.error('No config file specified');
     process.exit(1);
