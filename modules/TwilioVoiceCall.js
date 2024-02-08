@@ -15,7 +15,7 @@ class TwilioVoiceCall {
     }
 
     initialize() {
-        this.logger.info('Starting Twilio Outbound Voice Call', 'TWILIO VOICE');
+        this.logger.info('Initializing Twilio Outbound Voice Call', 'TWILIO VOICE');
 
         this.client = require('twilio')(this.server.Twilio.accountSid, this.server.Twilio.authToken);
     }

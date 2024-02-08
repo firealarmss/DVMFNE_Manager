@@ -18,6 +18,7 @@ const PeerWatcher = require('./modules/PeerWatcher');
 const DbManager = require("./modules/DbManager");
 const TwilioInboundMessageServer = require('./modules/TwilioInboundMessageServer');
 const TelegramBot = require('./modules/TelegramBot');
+const TwilioInboundCallServer = require('./modules/TwilioInboundCallServer');
 
 const argv = yargs
 
@@ -55,6 +56,7 @@ if (argv.config) {
         let peerWatcher = new PeerWatcher(logger, server, dbManager);
         let twilioInboundMessageServer = new TwilioInboundMessageServer(logger, server);
         let telegramBot = new TelegramBot(logger, server);
+        let twilioInboundCallServer = new TwilioInboundCallServer(logger, server);
 
         if (server.type === "FNE2"){
             logger.warn("FNE2 is no longer supported!", "CONFIG LOADER");
@@ -64,6 +66,10 @@ if (argv.config) {
 
         if (server.Twilio && server.Twilio.enabled && server.Twilio.inbound) {
             twilioInboundMessageServer.start();
+        }
+
+        if (server.Twilio && server.Twilio.enabled && server.Twilio.inboundCall) {
+            twilioInboundCallServer.start();
         }
 
         if (server.PeerWatcher && server.PeerWatcher.enabled) {

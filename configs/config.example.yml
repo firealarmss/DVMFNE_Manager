@@ -40,7 +40,9 @@ Servers:
       enabled: false
       fromNumber: "+1234567890"
       serverPort: 3601 # For inbound sms
+      inboundCallPort: 3602 # For inbound calls
       inbound: false
+      inboundCall: false
       outboundCall: false
       outboundSms: false # Not implemented
       accountSid: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
