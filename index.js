@@ -66,26 +66,38 @@ if (argv.config) {
 
         if (server.Twilio && server.Twilio.enabled && server.Twilio.inbound) {
             twilioInboundMessageServer.start();
+        } else {
+            logger.info("Twilio Inbound Message Server is disabled", "CONFIG LOADER");
         }
 
         if (server.Twilio && server.Twilio.enabled && server.Twilio.inboundCall) {
             twilioInboundCallServer.start();
+        } else {
+            logger.info("Twilio Inbound Call Server is disabled", "CONFIG LOADER");
         }
 
         if (server.PeerWatcher && server.PeerWatcher.enabled) {
             peerWatcher.start();
+        } else {
+            logger.info("Peer Watcher is disabled", "CONFIG LOADER");
         }
 
         if (server.Discord.enabled) {
             new DiscordBot(logger, server);
+        } else {
+            logger.info("Discord Bot is disabled", "CONFIG LOADER");
         }
 
         if (server.Telegram && server.Telegram.enabled) {
             telegramBot.start();
+        } else {
+            logger.info("Telegram Bot is disabled", "CONFIG LOADER");
         }
 
         if (server.AutoAclInterval && server.AutoAclInterval > 0) {
             autoAcl.start();
+        } else {
+            logger.info("AutoAcl is disabled", "CONFIG LOADER");
         }
     });
 } else {
