@@ -474,9 +474,10 @@ class ManagerServer {
             let fneCommunications = new FneCommunications(this.server, this.logger);
             let affResponse = await fneCommunications.getFneAffiliationList();
             let peerResponse = await fneCommunications.getFnePeerList();
+            let statusResponse = await fneCommunications.getFneStatus();
 
-            if (!affResponse || !peerResponse) {
-                res.status(500).send("Error getting aff or peer list");
+            if (!affResponse || !peerResponse || !statusResponse) {
+                res.status(500).send("Error getting aff or peer or status list");
                 return;
             }
 
@@ -487,6 +488,7 @@ class ManagerServer {
             });
 
             res.send({
+                fneStatus: statusResponse,
                 affiliationCount: affiliationCount,
                 peerCount: peerResponse.peers.length,
                 affiliationList: affResponse.affiliations
