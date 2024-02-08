@@ -530,7 +530,6 @@ class ManagerServer {
 
     isApiAuthenticated = (req, res, next) => {
         const apiKey = req.headers['x-dvmfne-manager-api-key'];
-        console.log(req.headers);
         const validApiKey = this.server.apiKey;
 
         if (!apiKey || apiKey !== validApiKey) {
