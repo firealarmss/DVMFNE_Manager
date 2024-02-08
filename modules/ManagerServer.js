@@ -463,7 +463,7 @@ class ManagerServer {
             res.sendStatus(200);
         });
 
-        /*
+        /**
          *   API Routes
          */
 
@@ -489,6 +489,36 @@ class ManagerServer {
                 peerCount: peerResponse.peers.length,
                 affiliationList: affResponse.affiliations
             });
+        });
+
+        this.app.get('/api/tg/list',this.isApiAuthenticated, async (req, res) => {
+             let tgRulesHandler = new TgRulesHandler(this.RulePath, this.logger);
+             tgRulesHandler.read();
+
+             if (!tgRulesHandler.rules) {
+                 res.status(500).send("Error getting tg list");
+                 return;
+             }
+
+             res.send({
+                 total_talkgroups: tgRulesHandler.rules.groupVoice.length,
+                 talkgroup_rules: tgRulesHandler.rules,
+             });
+        });
+
+        this.app.get('/api/rid/list', this.isApiAuthenticated, async (req, res) => {
+             let fneCommunications = new FneCommunications(this.server, this.logger);
+             let aclResponse = await fneCommunications.getRidAcl();
+
+             if (!aclResponse) {
+                 res.status(500).send("Error getting rid list");
+                 return;
+             }
+
+             res.send({
+                    total_rids: aclResponse.rids.length,
+                    rid_list: aclResponse
+             });
         });
 
         this.app.get('*', function(req, res){
