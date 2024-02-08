@@ -31,7 +31,7 @@ To build for linux:
 
 `npm run build:linux`
 
-Binary will be in the `bin` folder. By default, it will be named `fne2-tg-manager-os type`
+Binary will be in the `bin` folder. By default, it will be named `dvmfne_manager-os type`
 
 ### Running DVMFNE Manager without compiling
 
