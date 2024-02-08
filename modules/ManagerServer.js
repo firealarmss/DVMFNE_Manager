@@ -8,6 +8,8 @@
  */
 
 const express = require('express');
+const http = require('http');
+const { Server } = require("socket.io");
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -527,7 +529,12 @@ class ManagerServer {
     }
 
     start() {
-        this.initializedApp = this.app.listen(this.port, this.ServerBindAddress, () => {
+        const httpServer = http.createServer(this.app);
+        this.io = new Server(httpServer, {});
+
+        require('./SocketHandler')(this.io);
+
+        this.initializedApp = httpServer.listen(this.port, this.ServerBindAddress, () => {
             this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
         });
     }
