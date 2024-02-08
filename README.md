@@ -1,8 +1,8 @@
-# FNE2 TG Manager
+# DVMFNE Manager
 
 [![License](https://img.shields.io/badge/License-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0)
 
-Manage FNE2 Talk Groups
+Manage and control DVMFNE instances
 
 ## Getting started
 
@@ -33,7 +33,7 @@ To build for linux:
 
 Binary will be in the `bin` folder. By default, it will be named `fne2-tg-manager-os type`
 
-### Running FNE2 TG Manager without compiling
+### Running DVMFNE Manager without compiling
 
 If you want to specify your own config file:
 ```bash
