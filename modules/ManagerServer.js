@@ -562,6 +562,10 @@ class ManagerServer {
         const apiKey = req.headers['x-dvmfne-manager-api-key'];
         const validApiKey = this.server.apiKey;
 
+        if (this.server.apiAuthDisabled) {
+            return next();
+        }
+
         if (!apiKey || apiKey !== validApiKey) {
             return res.status(401).json({ error: 'Unauthorized: Invalid API key', status: 401 });
         }
