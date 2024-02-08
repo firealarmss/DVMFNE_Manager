@@ -467,7 +467,7 @@ class ManagerServer {
          *   API Routes
          */
 
-        this.app.get('/api/stats', async (req, res) => {
+        this.app.get('/api/stats', this.isApiAuthenticated, async (req, res) => {
             let affiliationCount = 0;
             let fneCommunications = new FneCommunications(this.server, this.logger);
             let affResponse = await fneCommunications.getFneAffiliationList();
@@ -484,7 +484,8 @@ class ManagerServer {
                 });
             });
 
-            res.send({ affiliationCount: affiliationCount,
+            res.send({
+                affiliationCount: affiliationCount,
                 peerCount: peerResponse.peers.length,
                 affiliationList: affResponse.affiliations
             });
@@ -526,6 +527,17 @@ class ManagerServer {
             return res.redirect('/');
         }
     }
+
+    isApiAuthenticated = (req, res, next) => {
+        const apiKey = req.headers['X-DVMFNE-MANAGER-API-KEY'];
+        const validApiKey = this.server.apiKey;
+
+        if (!apiKey || apiKey !== validApiKey) {
+            return res.status(401).json({ error: 'Unauthorized: Invalid API key', status: 401 });
+        }
+
+        next();
+    };
 }
 
 module.exports = ManagerServer;
