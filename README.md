@@ -54,4 +54,4 @@ Edit the `config.yml` file to your needs
 
 ## Todo
 
-Add support for "Converged FNE"
+Re-organize code to not have so much duplicated code.
