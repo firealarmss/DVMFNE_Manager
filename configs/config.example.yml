@@ -36,6 +36,16 @@ Servers:
         tab: "RID_ACL"
         range: "A:B"
 
+    Twilio:
+      enabled: false
+      fromNumber: "+1234567890"
+      serverPort: 3601 # For inbound sms
+      inbound: false
+      outboundCall: false
+      outboundSms: false # Not implemented
+      accountSid: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      authToken: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
     Discord:
       enabled: false
       token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

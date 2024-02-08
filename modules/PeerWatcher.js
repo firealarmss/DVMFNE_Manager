@@ -10,6 +10,7 @@
 const FneCommunications = require("./FneCommunications");
 const Mailer = require("./Mailer");
 const DiscordWebhook = require("./DiscordWebhook");
+const TwilioVoiceCall = require("./TwilioVoiceCall");
 
 // Many parts of this class is temporary until CFNE has a reporter of some sort.
 
@@ -30,6 +31,13 @@ class PeerWatcher {
         if (this.server.Discord.Webhook.enabled) {
             this.discordWebhook = new DiscordWebhook(logger, server);
         }
+
+        if (this.server.Twilio.enabled && this.server.Twilio.outboundCall) {
+            this.twilioVoiceCall = new TwilioVoiceCall(logger, server);
+
+            this.twilioVoiceCall.initialize();
+        }
+
         this.intervalId = undefined;
     }
 
@@ -125,6 +133,11 @@ class PeerWatcher {
         if (this.server.Discord.Webhook.enabled){
             const message = this.discordWebhook.createPeerAlert(peerInfo, peer);
             this.discordWebhook.send(message, peerInfo.discordWebhookUrl);
+        }
+
+        if (this.server.Twilio.enabled && this.server.Twilio.outboundCall){
+            const message = `Peer ${peerInfo.name} is ${type}`;
+            await this.twilioVoiceCall.makeVoiceCall(peerInfo.phone, message);
         }
     }
 }
