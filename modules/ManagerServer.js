@@ -463,6 +463,33 @@ class ManagerServer {
             res.sendStatus(200);
         });
 
+        /*
+         *   API Routes
+         */
+
+        this.app.get('/api/stats', async (req, res) => {
+            let affiliationCount = 0;
+            let fneCommunications = new FneCommunications(this.server, this.logger);
+            let affResponse = await fneCommunications.getFneAffiliationList();
+            let peerResponse = await fneCommunications.getFnePeerList();
+
+            if (!affResponse || !peerResponse) {
+                res.status(500).send("Error getting aff or peer list");
+                return;
+            }
+
+            await affResponse.affiliations.forEach(peer => {
+                peer.affiliations.forEach(affiliation => {
+                    affiliationCount++;
+                });
+            });
+
+            res.send({ affiliationCount: affiliationCount,
+                peerCount: peerResponse.peers.length,
+                affiliationList: affResponse.affiliations
+            });
+        });
+
         this.app.get('*', function(req, res){
             res.render('errors/404');
         });
