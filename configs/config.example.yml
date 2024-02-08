@@ -44,7 +44,7 @@ Servers:
       inbound: false
       inboundCall: false
       outboundCall: false
-      outboundSms: false # Not implemented
+      outboundSms: false
       accountSid: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       authToken: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
