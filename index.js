@@ -82,7 +82,7 @@ if (argv.config) {
             logger.info("Peer Watcher is disabled", "CONFIG LOADER");
         }
 
-        if (server.Discord.enabled) {
+        if (server.Discord && server.Discord.enabled) {
             new DiscordBot(logger, server);
         } else {
             logger.info("Discord Bot is disabled", "CONFIG LOADER");

@@ -470,29 +470,10 @@ class ManagerServer {
          */
 
         this.app.get('/api/stats', this.isApiAuthenticated, async (req, res) => {
-            let affiliationCount = 0;
             let fneCommunications = new FneCommunications(this.server, this.logger);
-            let affResponse = await fneCommunications.getFneAffiliationList();
-            let peerResponse = await fneCommunications.getFnePeerList();
-            let statusResponse = await fneCommunications.getFneStatus();
+            let response = await fneCommunications.getFneStats();
 
-            if (!affResponse || !peerResponse || !statusResponse) {
-                res.status(500).send("Error getting aff or peer or status list");
-                return;
-            }
-
-            await affResponse.affiliations.forEach(peer => {
-                peer.affiliations.forEach(affiliation => {
-                    affiliationCount++;
-                });
-            });
-
-            res.send({
-                fneStatus: statusResponse,
-                affiliationCount: affiliationCount,
-                peerCount: peerResponse.peers.length,
-                affiliationList: affResponse.affiliations
-            });
+            res.send(response);
         });
 
         this.app.get('/api/tg/list',this.isApiAuthenticated, async (req, res) => {

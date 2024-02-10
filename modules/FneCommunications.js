@@ -39,6 +39,27 @@ class FneCommunications {
         }
     }
 
+    async getFneStats() {
+        const peerResponse = await this.getFnePeerList();
+        const affResponse = await this.getFneAffiliationList();
+        const statusResponse = await this.getFneStatus();
+        let affiliationCount = 0;
+        let affiliationList; //TODO
+
+        await affResponse.affiliations.forEach(peer => {
+            peer.affiliations.forEach(affiliation => {
+                affiliationCount++;
+            });
+        });
+
+        if (!peerResponse || !affResponse) {
+            this.logger.error("Error getting peer or aff list");
+            return;
+        }
+
+        return {fneStatus: statusResponse, affiliationCount: affiliationCount, peerCount: peerResponse.peers.length, peers: peerResponse.peers}
+    }
+
     async getFneAffiliationList(){
         try {
             const response = await this.restClient.send('GET', '/report-affiliations', null);
