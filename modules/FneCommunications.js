@@ -46,16 +46,16 @@ class FneCommunications {
         let affiliationCount = 0;
         let affiliationList; //TODO
 
+        if (!peerResponse || !affResponse || !statusResponse) {
+            this.logger.error("Error getting peer or aff or status response list");
+            return;
+        }
+
         await affResponse.affiliations.forEach(peer => {
             peer.affiliations.forEach(affiliation => {
                 affiliationCount++;
             });
         });
-
-        if (!peerResponse || !affResponse) {
-            this.logger.error("Error getting peer or aff list");
-            return;
-        }
 
         return {fneStatus: statusResponse, affiliationCount: affiliationCount, peerCount: peerResponse.peers.length, peers: peerResponse.peers}
     }
