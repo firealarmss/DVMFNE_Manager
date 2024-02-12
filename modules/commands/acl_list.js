@@ -4,7 +4,7 @@ const SheetsCommunications = require('../SheetsCommunications');
 
 module.exports = (server, logger) => {
 
-    const sheetsCommunications = new SheetsCommunications(server.Sheets.serviceAccountKeyFile, server.Sheets.sheetId);
+    const sheetsCommunications = new SheetsCommunications(logger, server.Sheets.serviceAccountKeyFile, server.Sheets.sheetId);
 
     return {
 

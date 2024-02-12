@@ -69,7 +69,7 @@ class ManagerServer {
 
         this.dbManager.initialize();
 
-        this.sheetsCommunications = new SheetsCommunications(this.server.Sheets.serviceAccountKeyFile, this.server.Sheets.sheetId);
+        this.sheetsCommunications = new SheetsCommunications(logger, this.server.Sheets.serviceAccountKeyFile, this.server.Sheets.sheetId);
 
         this.app.get('/', (req, res) => {
             res.render('system_landing');

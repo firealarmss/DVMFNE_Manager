@@ -19,7 +19,7 @@ class AutoAcl {
 
         this.intervalId = undefined;
 
-        this.sheetsCommunications = new SheetsCommunications(this.server.Sheets.serviceAccountKeyFile, this.server.Sheets.sheetId);
+        this.sheetsCommunications = new SheetsCommunications(logger, this.server.Sheets.serviceAccountKeyFile, this.server.Sheets.sheetId);
     }
 
      start(){
