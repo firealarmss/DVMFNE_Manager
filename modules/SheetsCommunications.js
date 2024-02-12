@@ -11,16 +11,17 @@ const { google } = require('googleapis');
 
 class SheetsCommunications {
     constructor(logger, serviceAccountKeyFile, sheetId) {
-        this.logger = logger;
-
         if (!serviceAccountKeyFile){
             logger.error("Issue with google JSON file");
+            return;
         }
 
         if (!sheetId) {
             logger.error("Issue with sheet ID");
+            return;
         }
 
+        this.logger = logger;
         this.serviceAccountKeyFile = serviceAccountKeyFile;
         this.sheetId = sheetId;
 

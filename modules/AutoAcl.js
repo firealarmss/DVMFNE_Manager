@@ -16,32 +16,41 @@ class AutoAcl {
     constructor(logger, server) {
         this.logger = logger;
         this.server = server;
+        this.enabled = server.Sheets.enabled;
 
-        this.intervalId = undefined;
+            this.intervalId = undefined;
 
-        this.sheetsCommunications = new SheetsCommunications(logger, this.server.Sheets.serviceAccountKeyFile, this.server.Sheets.sheetId);
+        if (!this.enabled) {
+            logger.warn("Sheets disabled but was created", "AUTO ACL");
+        } else {
+            this.sheetsCommunications = new SheetsCommunications(logger, this.server.Sheets.serviceAccountKeyFile, this.server.Sheets.sheetId);
+        }
     }
 
      start(){
-        this.logger.info("Started Auto ACL", "AUTO ACL");
+        if (!this.enabled) {
+            this.logger.info("Started Auto ACL", "AUTO ACL");
 
-        this.intervalId = setInterval(async () => {
-            this.logger.info("Updating ACL", "AUTO ACL");
-            let csvHandler = new CsvHandler(this.logger);
-            let response = await this.sheetsCommunications.read(this.server.Sheets.RidAcl.range, this.server.Sheets.RidAcl.tab);
+            this.intervalId = setInterval(async () => {
+                this.logger.info("Updating ACL", "AUTO ACL");
+                let csvHandler = new CsvHandler(this.logger);
+                let response = await this.sheetsCommunications.read(this.server.Sheets.RidAcl.range, this.server.Sheets.RidAcl.tab);
 
-            if (!response) {
-                this.logger.error("Failed to read ACL from Google Sheets", "AUTO ACL");
-            }
+                if (!response) {
+                    this.logger.error("Failed to read ACL from Google Sheets", "AUTO ACL");
+                }
 
-            response = response.filter(row => !row[0].includes('#'));
-            csvHandler.write(this.server.RidAclPath, csvHandler.sheetAclToCsv(response).trim());
-            this.logger.info("Saved " + response.length + " entry's to ACL", "AUTO ACL");
+                response = response.filter(row => !row[0].includes('#'));
+                csvHandler.write(this.server.RidAclPath, csvHandler.sheetAclToCsv(response).trim());
+                this.logger.info("Saved " + response.length + " entry's to ACL", "AUTO ACL");
 
-            if(this.server.Sheets.autoUpdateFne){
-                this.updateFne();
-            }
-        }, this.server.AutoAclInterval * 1000 * 60);
+                if (this.server.Sheets.autoUpdateFne) {
+                    this.updateFne();
+                }
+            }, this.server.AutoAclInterval * 1000 * 60);
+        } else {
+            this.logger.warn("Could not start AutoAcl with no rid source mode", "AUTO ACL");
+        }
     }
 
     stop(){
