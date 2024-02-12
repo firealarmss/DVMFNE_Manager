@@ -58,6 +58,11 @@ if (argv.config) {
         let telegramBot = new TelegramBot(logger, server);
         let twilioInboundCallServer = new TwilioInboundCallServer(logger, server);
 
+        if (config.Debug) {
+            logger.dbug("Debug server params");
+            console.log(`Enabled: ${server.Sheets.enabled}\nSheet ID: ${server.Sheets.sheetId}\nSheets JSON File: ${server.Sheets.serviceAccountKeyFile}`)
+        }
+
         if (server.type === "FNE2"){
             logger.warn("FNE2 is no longer supported!", "CONFIG LOADER");
         }
