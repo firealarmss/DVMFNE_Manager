@@ -18,6 +18,7 @@ const DbManager = require('./DbManager');
 const FneCommunications = require('./FneCommunications');
 const SheetsCommunications = require('./SheetsCommunications');
 const CsvHandler = require('./CsvHandler');
+const PeerWatcher = require("./PeerWatcher");
 
 class ManagerServer {
      constructor(server, config, dbManager, logger) {
@@ -513,6 +514,7 @@ class ManagerServer {
 
     start() {
         const httpServer = http.createServer(this.app);
+
         this.io = new Server(httpServer, {});
 
         require('./SocketHandler')(this.io);
@@ -520,6 +522,14 @@ class ManagerServer {
         this.initializedApp = httpServer.listen(this.port, this.ServerBindAddress, () => {
             this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
         });
+
+        const peerWatcher = new PeerWatcher(this.logger, this.server, this.dbManager, this.io);
+
+        if (this.server.PeerWatcher && this.server.PeerWatcher.enabled) {
+            peerWatcher.start();
+        } else {
+            this.logger.info("Peer Watcher is disabled", "MANAGER SERVER");
+        }
     }
 
     stop() {

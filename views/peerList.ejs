@@ -59,11 +59,34 @@
         </tbody>
     </table>
 </div>
+<script src="/socket.io/socket.io.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.getElementById('peerIdSearch');
         const tableBody = document.querySelector('tbody');
         const tableRows = document.querySelectorAll('tbody tr');
+
+        const socket = io();
+
+        socket.on('peerListUpdate', (updatedPeers) => {
+            console.log('Peer list update received:', updatedPeers);
+            if (!Array.isArray(updatedPeers)) return;
+
+            tableBody.innerHTML = '';
+
+            updatedPeers.forEach(updatedPeer => {
+                const existingRow = Array.from(tableRows).find(row => row.querySelector('td:nth-child(3)').textContent === updatedPeer.peerId.toString());
+                if (existingRow) {
+                    updateRow(existingRow, updatedPeer);
+                } else {
+                    const newRow = createRowForPeer(updatedPeer);
+                    tableBody.appendChild(newRow);
+                }
+            });
+
+            sortTable(document.getElementById('sortingMethod').value);
+        });
 
         searchInput.addEventListener('input', () => {
             const searchValue = searchInput.value.toLowerCase();
@@ -80,6 +103,49 @@
                 }
             });
         });
+
+        function updateRow(row, peer) {
+            const connectionStateText = netConnectionStatus[peer.connectionState] || peer.connectionState;
+            const rxFrequencyText = peer.config && peer.config.rxFrequency ? formatFrequency(peer.config.rxFrequency) : 'N/A';
+            const txFrequencyText = peer.config && peer.config.txFrequency ? formatFrequency(peer.config.txFrequency) : 'N/A';
+
+            row.className = peer.connectionState.toString() !== '4' ? 'table-warning' : '';
+            row.cells[0].textContent = peer.connected ? 'Yes' : 'No';
+            row.cells[1].textContent = connectionStateText;
+            row.cells[4].textContent = peer.address;
+            row.cells[5].textContent = rxFrequencyText;
+            row.cells[6].textContent = txFrequencyText;
+            row.cells[7].textContent = peer.config.software;
+        }
+
+
+        function createRowForPeer(peer) {
+            const trClass = peer.connectionState && peer.connectionState.toString() !== '4' ? 'table-warning' : '';
+            const connected = peer.connected ? 'Yes' : 'No';
+            const peerId = peer.peerId || 'N/A';
+            const identity = peer.config && peer.config.identity ? peer.config.identity : 'N/A';
+            const address = peer.address || 'N/A';
+            const connectionState = netConnectionStatus[peer.connectionState] || 'N/A';
+            const rxFrequency = peer.config && peer.config.rxFrequency ? formatFrequency(peer.config.rxFrequency) : 'N/A';
+            const txFrequency = peer.config && peer.config.txFrequency ? formatFrequency(peer.config.txFrequency) : 'N/A';
+            const software = peer.config && peer.config.software ? peer.config.software : 'N/A';
+
+            const row = document.createElement('tr');
+            row.className = trClass;
+            row.innerHTML = `
+        <td>${connected}</td>
+        <td>${connectionState}</td>
+        <td>${peerId}</td>
+        <td>${identity}</td>
+        <td>${address}</td>
+        <td>${rxFrequency}</td>
+        <td>${txFrequency}</td>
+        <td>${software}</td>
+    `;
+            return row;
+        }
+
+
 
         const sortingMethodSelect = document.getElementById('sortingMethod');
         const sortButton = document.getElementById('sortButton');
@@ -115,9 +181,7 @@
                 }
             });
 
-            rowsArray.forEach(row => {
-                tableBody.appendChild(row);
-            });
+            rowsArray.forEach(row => tableBody.appendChild(row));
         }
 
         sortTable('asc');

@@ -16,10 +16,11 @@ const TwilioSmsSender = require("./TwilioSmsSender");
 // Many parts of this class is temporary until CFNE has a reporter of some sort.
 
 class PeerWatcher {
-    constructor(logger, server, dbManager) {
+    constructor(logger, server, dbManager, io = undefined) {
         this.logger = logger;
         this.server = server;
         this.dbManager = dbManager;
+        this.io = io;
 
         this.currentPeers = [];
         this.lastKnownPeerStates = {};
@@ -53,6 +54,11 @@ class PeerWatcher {
 
         this.intervalId = setInterval(async () => {
             await this.getPeerList();
+
+            if (this.currentPeers && this.io) {
+                this.io.emit("peerListUpdate", this.currentPeers);
+                this.logger.dbug("Sent peer list update to clients", "PEER WATCHER");
+            }
 
             this.dbManager.getAllPeerInfos((err, peerInfos) => {
                 if (err) {

@@ -81,11 +81,11 @@ if (argv.config) {
             logger.info("Twilio Inbound Call Server is disabled", "CONFIG LOADER");
         }
 
-        if (server.PeerWatcher && server.PeerWatcher.enabled) {
+/*        if (server.PeerWatcher && server.PeerWatcher.enabled) {
             peerWatcher.start();
         } else {
             logger.info("Peer Watcher is disabled", "CONFIG LOADER");
-        }
+        }*/
 
         if (server.Discord && server.Discord.enabled) {
             new DiscordBot(logger, server);
