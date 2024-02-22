@@ -15,6 +15,22 @@ function formatFrequency(freqHz) {
     return `${freqMHz.toFixed(4)} MHz`;
 }
 
+function applyFormattingToElements() {
+    document.querySelectorAll('[data-connState]').forEach(element => {
+        const state = element.getAttribute('data-connState');
+        if (state !== null) {
+            element.textContent = netConnectionStatus[parseInt(state, 10)] || 'Unknown State';
+        }
+    });
+
+    document.querySelectorAll('[data-frequency]').forEach(element => {
+        const frequency = element.getAttribute('data-frequency');
+        if (frequency !== null) {
+            element.textContent = formatFrequency(parseInt(frequency, 10));
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
     const frequencyElements = document.querySelectorAll('[data-frequency]');
     const connectionStatusElements = document.querySelectorAll('[data-connState]');
@@ -31,4 +47,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         element.textContent = formatFrequency(frequency);
     });
+
 });

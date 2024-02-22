@@ -63,9 +63,11 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const peerCountElement = document.querySelector('h4');
         const searchInput = document.getElementById('peerIdSearch');
         const tableBody = document.querySelector('tbody');
-        const tableRows = document.querySelectorAll('tbody tr');
+        const sortingMethodSelect = document.getElementById('sortingMethod');
+        const sortButton = document.getElementById('sortButton');
 
         const socket = io();
 
@@ -73,35 +75,35 @@
             console.log('Peer list update received:', updatedPeers);
             if (!Array.isArray(updatedPeers)) return;
 
-            tableBody.innerHTML = '';
+            updateTableWithPeers(updatedPeers);
 
-            updatedPeers.forEach(updatedPeer => {
-                const existingRow = Array.from(tableRows).find(row => row.querySelector('td:nth-child(3)').textContent === updatedPeer.peerId.toString());
-                if (existingRow) {
-                    updateRow(existingRow, updatedPeer);
-                } else {
-                    const newRow = createRowForPeer(updatedPeer);
-                    tableBody.appendChild(newRow);
-                }
-            });
+            peerCountElement.innerText = `Peer Count: ${updatedPeers.length}`;
 
-            sortTable(document.getElementById('sortingMethod').value);
+            sortTable(sortingMethodSelect.value);
         });
+
+        function updateTableWithPeers(peers) {
+            tableBody.innerHTML = '';
+            peers.forEach(peer => {
+                const newRow = createRowForPeer(peer);
+                tableBody.appendChild(newRow);
+            });
+            applyFormattingToElements();
+        }
 
         searchInput.addEventListener('input', () => {
             const searchValue = searchInput.value.toLowerCase();
+            const tableRows = document.querySelectorAll('tbody tr');
 
             tableRows.forEach(row => {
                 const peerIdCell = row.querySelector('td:nth-child(3)');
-                if (peerIdCell) {
-                    const peerId = peerIdCell.textContent.toLowerCase();
-                    if (peerId.includes(searchValue)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
+                const peerId = peerIdCell.textContent.toLowerCase();
+                row.style.display = peerId.includes(searchValue) ? '' : 'none';
             });
+        });
+
+        sortButton.addEventListener('click', () => {
+            sortTable(sortingMethodSelect.value);
         });
 
         function updateRow(row, peer) {
@@ -145,23 +147,24 @@
             return row;
         }
 
-
-
-        const sortingMethodSelect = document.getElementById('sortingMethod');
-        const sortButton = document.getElementById('sortButton');
-
         sortButton.addEventListener('click', () => {
             sortTable(sortingMethodSelect.value);
         });
 
         function sortTable(sortMethod) {
+            const tableRows = document.querySelectorAll('tbody tr');
+
             const rowsArray = Array.from(tableRows);
 
             rowsArray.sort((rowA, rowB) => {
-                const idA = parseInt(rowA.cells[2].textContent);
-                const idB = parseInt(rowB.cells[2].textContent);
-                const connStateA = rowA.cells[1].getAttribute('data-connState');
-                const connStateB = rowB.cells[1].getAttribute('data-connState');
+                const idA = parseInt(rowA.querySelector('td:nth-child(3)').textContent, 10);
+                const idB = parseInt(rowB.querySelector('td:nth-child(3)').textContent, 10);
+
+                let connStateAElement = rowA.querySelector('[data-connState]');
+                let connStateBElement = rowB.querySelector('[data-connState]');
+                let connStateA = connStateAElement ? connStateAElement.getAttribute('data-connState') : '';
+                let connStateB = connStateBElement ? connStateBElement.getAttribute('data-connState') : '';
+
                 const softwareA = rowA.cells[7].textContent.trim().toLowerCase();
                 const softwareB = rowB.cells[7].textContent.trim().toLowerCase();
 
@@ -171,13 +174,9 @@
                     case 'desc':
                         return idB - idA;
                     case 'connState':
-                        if (connStateA < connStateB) return -1;
-                        if (connStateA > connStateB) return 1;
-                        return 0;
+                        return (connStateA || '').localeCompare(connStateB || '');
                     case 'software':
-                        if (softwareA < softwareB) return -1;
-                        if (softwareA > softwareB) return 1;
-                        return 0;
+                        return softwareA.localeCompare(softwareB);
                 }
             });
 
