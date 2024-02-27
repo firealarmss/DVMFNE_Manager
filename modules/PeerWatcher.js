@@ -116,8 +116,9 @@ class PeerWatcher {
                 newState = 0;
             }
 
-            if (this.lastKnownPeerStates[peerId] === 1 && newState === 0) {
-                await this.sendAlert(peerInfo, peer, newState === 1 ? "connected" : "disconnected");
+            if (this.lastKnownPeerStates[peerId] !== newState) {
+                const stateChangeType = newState === 1 ? "connected" : "disconnected";
+                await this.sendAlert(peerInfo, peer, stateChangeType);
             }
 
             this.lastKnownPeerStates[peerId] = newState;
