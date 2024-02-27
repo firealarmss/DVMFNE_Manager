@@ -27,13 +27,17 @@ class TwilioVoiceCall {
         }
 
         this.logger.info(`Making voice call to ${to}`, 'TWILIO VOICE');
-        this.client.calls
-            .create({
-                twiml: `<Response><Say>${message}</Say></Response>`,
-                to: to,
-                from: this.server.Twilio.fromNumber
-            })
-            .then(call => this.logger.info(`Call SID: ${call.sid}`, 'TWILIO VOICE'));
+        try {
+            this.client.calls
+                .create({
+                    twiml: `<Response><Say>${message}</Say></Response>`,
+                    to: to,
+                    from: this.server.Twilio.fromNumber
+                })
+                .then(call => this.logger.info(`Call SID: ${call.sid}`, 'TWILIO VOICE'));
+        } catch (e) {
+            this.logger.error(e, 'TWILIO VOICE');
+        }
     }
 }
 

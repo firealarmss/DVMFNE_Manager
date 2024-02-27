@@ -53,7 +53,6 @@ if (argv.config) {
         let dbManager = new DbManager("./db/users.db", logger);
         let app = new  TgManagerServer(server, config, dbManager, logger);
         let autoAcl = new AutoAcl(logger, server);
-        let peerWatcher = new PeerWatcher(logger, server, dbManager);
         let twilioInboundMessageServer = new TwilioInboundMessageServer(logger, server);
         let telegramBot = new TelegramBot(logger, server);
         let twilioInboundCallServer = new TwilioInboundCallServer(logger, server);
