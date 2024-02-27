@@ -10,15 +10,15 @@
 const yargs = require('yargs');
 const fs = require('fs');
 const yaml = require('js-yaml');
-const TgManagerServer = require('./modules/ManagerServer');
+const TgManagerServer = require('./modules/web/ManagerServer');
 const Logger = require('./modules/Logger');
-const AutoAcl = require('./modules/AutoAcl');
-const DiscordBot = require('./modules/DiscordBot');
-const PeerWatcher = require('./modules/PeerWatcher');
+const AutoAcl = require('./modules/fne/AutoAcl');
+const DiscordBot = require('./modules/discord/DiscordBot');
+const PeerWatcher = require('./modules/fne/PeerWatcher');
 const DbManager = require("./modules/DbManager");
-const TwilioInboundMessageServer = require('./modules/TwilioInboundMessageServer');
-const TelegramBot = require('./modules/TelegramBot');
-const TwilioInboundCallServer = require('./modules/TwilioInboundCallServer');
+const TwilioInboundMessageServer = require('./modules/twilio/TwilioInboundMessageServer');
+const TelegramBot = require('./modules/telegram/TelegramBot');
+const TwilioInboundCallServer = require('./modules/twilio/TwilioInboundCallServer');
 
 const argv = yargs
 
@@ -32,7 +32,7 @@ const argv = yargs
     .argv;
 
 let config = {
-    Servers: undefined
+    servers: undefined
 };
 
 if (argv.config) {
@@ -46,10 +46,10 @@ if (argv.config) {
 
     let LogPath = config.LogPath || "Disabled";
 
-    console.log(`DVMFNE Manager\n\nDebug: ${config.Debug}\nLog Path: ${LogPath}\nLoaded: ${config.Servers.length} servers\n`);
+    console.log(`DVMFNE Manager\n\ndebug: ${config.debug}\nLog Path: ${LogPath}\nLoaded: ${config.servers.length} servers\n`);
 
-    config.Servers.forEach((server) => {
-        let logger = new Logger(config.Debug, server.name, config.LogPath, 0);
+    config.servers.forEach((server) => {
+        let logger = new Logger(config.debug, server.name, config.LogPath, 0);
         let dbManager = new DbManager("./db/users.db", logger);
         let app = new  TgManagerServer(server, config, dbManager, logger);
         let autoAcl = new AutoAcl(logger, server);
@@ -57,8 +57,8 @@ if (argv.config) {
         let telegramBot = new TelegramBot(logger, server);
         let twilioInboundCallServer = new TwilioInboundCallServer(logger, server);
 
-        if (config.Debug) {
-            logger.dbug("Debug server params");
+        if (config.debug) {
+            logger.dbug("debug server params");
             console.log(`Enabled: ${server.Sheets.enabled}\nSheet ID: ${server.Sheets.sheetId}\nSheets JSON File: ${server.Sheets.serviceAccountKeyFile}`)
         }
 
@@ -92,7 +92,7 @@ if (argv.config) {
             logger.info("Telegram Bot is disabled", "CONFIG LOADER");
         }
 
-        if (server.AutoAclInterval && server.AutoAclInterval > 0) {
+        if (server.autoAclInterval && server.autoAclInterval > 0) {
             autoAcl.start();
         } else {
             logger.info("AutoAcl is disabled", "CONFIG LOADER");

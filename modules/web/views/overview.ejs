@@ -10,7 +10,7 @@
         <p class="lead">Simple TG file editor</p>
         <hr class="my-4">
         <% config.servers.forEach((server)=>{%>
-            <a class="btn btn-primary btn-lg" href="http://<%=server.ServerBindAddress%>:<%=server.ServerPort%>/" role="button"><%=server.name%></a>
+            <a class="btn btn-primary btn-lg" href="http://<%=server.serverBindAddress%>:<%=server.serverPort%>/" role="button"><%=server.name%></a>
         <%})%>
     </div>
 </div>

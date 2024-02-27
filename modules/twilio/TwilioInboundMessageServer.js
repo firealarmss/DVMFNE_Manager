@@ -10,7 +10,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { MessagingResponse } = require('twilio').twiml;
-const FneCommunications = require('./FneCommunications');
+const FneCommunications = require('../fne/FneCommunications');
 
 class TwilioInboundMessageServer {
     constructor(logger, server) {

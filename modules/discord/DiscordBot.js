@@ -1,7 +1,7 @@
 const { Client, Collection, GatewayIntentBits, Events, REST, Routes } = require('discord.js');
 const path = require('path');
 const fs = require('fs');
-const FneCommunications = require('./FneCommunications');
+const FneCommunications = require('../fne/FneCommunications');
 
 class DiscordBot {
     constructor(logger, server) {

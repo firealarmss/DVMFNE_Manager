@@ -8,7 +8,7 @@
  */
 
 const CsvHandler = require("./CsvHandler");
-const SheetsCommunications = require("./SheetsCommunications");
+const SheetsCommunications = require("../SheetsCommunications");
 const FneCommunications = require("./FneCommunications");
 
 
@@ -47,7 +47,7 @@ class AutoAcl {
                 if (this.server.Sheets.autoUpdateFne) {
                     this.updateFne();
                 }
-            }, this.server.AutoAclInterval * 1000 * 60);
+            }, this.server.autoAclInterval * 1000 * 60);
         } else {
             this.logger.warn("Could not start AutoAcl with no rid source mode", "AUTO ACL");
         }

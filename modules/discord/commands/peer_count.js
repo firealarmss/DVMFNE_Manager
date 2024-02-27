@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, AttachmentBuilder } = require('discord.js');
-const FneCommunications = require('../FneCommunications');
+const FneCommunications = require('../../fne/FneCommunications');
 
 module.exports = (server, logger) => {
 

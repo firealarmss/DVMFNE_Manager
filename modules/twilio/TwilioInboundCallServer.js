@@ -10,7 +10,7 @@
 const express = require('express');
 const VoiceResponse = require('twilio').twiml.VoiceResponse;
 const urlencoded = require('body-parser').urlencoded;
-const FneCommunications = require('./FneCommunications');
+const FneCommunications = require('../fne/FneCommunications');
 
 /*const netConnectionStatus = Object.freeze({
     0: { text: "Waiting Connection", icon: "⏳" },

@@ -1,15 +1,15 @@
-Debug: false
+debug: false
 LogPath: "./logs/tg_manager.log" # If you do not want to log to a file, comment this line
 
-Servers:
+servers:
   - name: "Centrunk"
     type: "CFNE" # FNE2 or CFNE
     apiKey: "xxxxxxxx"
 
-    AutoAclInterval: 60 # 0 to disable. Time in minutes
+    autoAclInterval: 60 # 0 to disable. Time in minutes
 
-    ServerPort: 3001
-    ServerBindAddress: 0.0.0.0
+    serverPort: 3001
+    serverBindAddress: 0.0.0.0
 
     Rest:
       address: "127.0.0.1"
@@ -80,8 +80,8 @@ Servers:
   - name: "Some FNE2" # FNE2 is no longer support, but some features will work
     type: "FNE2" # FNE2 or CFNE
 
-    ServerPort: 3000
-    ServerBindAddress: 0.0.0.0
+    serverPort: 3000
+    serverBindAddress: 0.0.0.0
 
     RulePath: "./tests/routing_rules.yml"
     ConfigPath: "./tests/router_config.yml"

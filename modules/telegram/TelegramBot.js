@@ -8,7 +8,7 @@
  */
 
 const TelegramBot = require('node-telegram-bot-api');
-const FneCommunications = require('./FneCommunications');
+const FneCommunications = require('../fne/FneCommunications');
 const {EmbedBuilder} = require("discord.js");
 
 const netConnectionStatus = Object.freeze({

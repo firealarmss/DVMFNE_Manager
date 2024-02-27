@@ -13,12 +13,12 @@ const { Server } = require("socket.io");
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
-const TgRulesHandler = require('./TgRulesHandler.js');
-const DbManager = require('./DbManager');
-const FneCommunications = require('./FneCommunications');
-const SheetsCommunications = require('./SheetsCommunications');
-const CsvHandler = require('./CsvHandler');
-const PeerWatcher = require("./PeerWatcher");
+const TgRulesHandler = require('../fne/TgRulesHandler.js');
+const DbManager = require('../DbManager');
+const FneCommunications = require('../fne/FneCommunications');
+const SheetsCommunications = require('../SheetsCommunications');
+const CsvHandler = require('../fne/CsvHandler');
+const PeerWatcher = require("../fne/PeerWatcher");
 
 class ManagerServer {
      constructor(server, config, dbManager, logger) {
@@ -33,15 +33,15 @@ class ManagerServer {
 
         this.dbManager = dbManager;
 
-        this.port = server.ServerPort || 3000;
+        this.port = server.serverPort || 3000;
         this.name = server.name;
         this.type = server.type;
-        this.ServerBindAddress = server.ServerBindAddress || "0.0.0.0";
+        this.serverBindAddress = server.serverBindAddress || "0.0.0.0";
         this.RulePath = server.RulePath;
 
         this.app.set('view engine', 'ejs');
-        this.app.set('views', path.join(__dirname, '..', 'views'));
-        this.app.use('/public', express.static('public'))
+        this.app.set('views', path.join(__dirname, 'views'));
+        this.app.use('/public', express.static('modules/web/public'))
 
         this.app.use(express.json());
         this.app.use(bodyParser.json());
@@ -519,7 +519,7 @@ class ManagerServer {
 
         require('./SocketHandler')(this.io);
 
-        this.initializedApp = httpServer.listen(this.port, this.ServerBindAddress, () => {
+        this.initializedApp = httpServer.listen(this.port, this.serverBindAddress, () => {
             this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
         });
 
@@ -543,7 +543,7 @@ class ManagerServer {
             this.logger.info(`Stopped ${this.name}; Restarting`, "MANAGER SERVER");
 
             setTimeout(() => {
-                this.initializedApp = this.app.listen(this.port, this.ServerBindAddress, () => {
+                this.initializedApp = this.app.listen(this.port, this.serverBindAddress, () => {
                     this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");
                 });
             }, 1000);

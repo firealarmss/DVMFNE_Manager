@@ -8,10 +8,10 @@
  */
 
 const FneCommunications = require("./FneCommunications");
-const Mailer = require("./Mailer");
-const DiscordWebhook = require("./DiscordWebhook");
-const TwilioVoiceCall = require("./TwilioVoiceCall");
-const TwilioSmsSender = require("./TwilioSmsSender");
+const Mailer = require("../socketlabs/Mailer");
+const DiscordWebhook = require("../discord/DiscordWebhook");
+const TwilioVoiceCall = require("../twilio/TwilioVoiceCall");
+const TwilioSmsSender = require("../twilio/TwilioSmsSender");
 
 // Many parts of this class is temporary until CFNE has a reporter of some sort.
 

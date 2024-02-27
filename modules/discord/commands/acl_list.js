@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, AttachmentBuilder } = require('discord.js');
-const CsvHandler = require("../CsvHandler");
-const SheetsCommunications = require('../SheetsCommunications');
+const CsvHandler = require("../../fne/CsvHandler");
+const SheetsCommunications = require('../../SheetsCommunications');
 
 module.exports = (server, logger) => {
 
