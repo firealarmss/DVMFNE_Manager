@@ -11,7 +11,6 @@ const CsvHandler = require("./CsvHandler");
 const SheetsCommunications = require("../SheetsCommunications");
 const FneCommunications = require("./FneCommunications");
 
-
 class AutoAcl {
     constructor(logger, server) {
         this.logger = logger;
@@ -28,7 +27,7 @@ class AutoAcl {
     }
 
      start(){
-        if (!this.enabled) {
+        if (this.enabled) {
             this.logger.info("Started Auto ACL", "AUTO ACL");
 
             this.intervalId = setInterval(async () => {
