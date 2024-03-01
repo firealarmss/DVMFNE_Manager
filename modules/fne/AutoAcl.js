@@ -17,7 +17,7 @@ class AutoAcl {
         this.server = server;
         this.enabled = server.Sheets.enabled;
 
-            this.intervalId = undefined;
+        this.intervalId = undefined;
 
         if (!this.enabled) {
             logger.warn("Sheets disabled but was created", "AUTO ACL");

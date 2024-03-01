@@ -72,7 +72,7 @@ class DiscordWebhook {
                         this.logger.error('Error parsing JSON response:' + e, 'DISCORD WEBHOOK');
                     }
                 } else {
-                    this.logger.warn('No response body from discord webhook', 'DISCORD WEBHOOK');
+                    this.logger.dbug('No response body from discord webhook', 'DISCORD WEBHOOK');
                 }
             });
         });
