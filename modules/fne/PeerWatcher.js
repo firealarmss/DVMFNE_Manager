@@ -137,14 +137,12 @@ class PeerWatcher {
     async sendAlert(peerInfo, peer, type) {
         if (this.server.Mailer.enabled) {
             if (peer) {
-                //console.log(fneConnectionState)
-                //console.log(fneConnectionState.fneConnectionState[peer.connectionState])
-                //this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) is disconnected with state: ${fneConnectionState.fneConnectionState[peer.connectionState]}`, "PEER WATCHER");
-                this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`, "PEER WATCHER");
-                await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type} with state: ${peer.connectionState}`, peerInfo.email);
+                this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) is disconnected with state: ${fneConnectionState[peer.connectionState]}`, "PEER WATCHER");
+                //this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`, "PEER WATCHER");
+                await this.mailer.send(`${this.server.name} PEER ALERT`, `Peer ${peerInfo.name} is ${type} with state: ${fneConnectionState[peer.connectionState]}`, peerInfo.email);
             } else {
                 this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) not connected or peer information is not available.`, "PEER WATCHER");
-                await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type}`, peerInfo.email);
+                await this.mailer.send(`${this.server.name} PEER ALERT`, `Peer ${peerInfo.name} is ${type}`, peerInfo.email);
             }
         }
 
