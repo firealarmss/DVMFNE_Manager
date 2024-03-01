@@ -69,6 +69,13 @@
                     </select>
                 </div>
                 <div>
+                    <label for="group-affiliated-<%= index %>">Affiliated:</label>
+                    <select id="group-affiliated-<%= index %>" class="form-control">
+                        <option value="true" <%= group.config.affiliated ? 'selected' : '' %>>True</option>
+                        <option value="false" <%= !group.config.affiliated ? 'selected' : '' %>>False</option>
+                    </select>
+                </div>
+                <div>
                     <label for="group-inclusion-<%= index %>">Inclusions:</label>
                     <input type="text" class="form-control group-inclusion" id="group-inclusion-<%= index %>" value="<%= group.config.inclusion.join(', ') %>" placeholder="Enter inclusions separated by commas"/>
                 </div>
@@ -120,8 +127,7 @@
     <button class="btn btn-primary" onclick="saveChanges()">Save Changes</button>
 </div>
 
-
-<script src="/modules/web/public/js/cfneRulesUtils.js"></script>
+<script src="/public/js/cfneRulesUtils.js"></script>
 
 </body>
 </html>

@@ -56,6 +56,7 @@ function addNewTalkGroup() {
         name: newTgName,
         config: {
             active: newTgActive,
+            //affiliated: affiliated,
             inclusion: [],
             exclusion: [],
             rewrite: []
@@ -122,6 +123,7 @@ function saveChanges() {
 
         const groupNameInput = groupElem.querySelector(`#group-name-${groupIndex}`);
         const groupActiveSelect = groupElem.querySelector(`#group-active-${groupIndex}`);
+        const groupAffiliatedSelect = groupElem.querySelector(`#group-affiliated-${groupIndex}`);
         const groupSourceTgidInput = groupElem.querySelector(`#group-source-tgid-${groupIndex}`);
         const groupSourceSlotInput = groupElem.querySelector(`#group-source-slot-${groupIndex}`);
         const groupInclusionInput = groupElem.querySelector(`#group-inclusion-${groupIndex}`);
@@ -132,6 +134,7 @@ function saveChanges() {
             return null;
         }
 
+        const affiliated = groupAffiliatedSelect.value === 'true';
         const inclusions = groupInclusionInput && groupInclusionInput.value ? groupInclusionInput.value.split(',').map(id => id.trim()) : [];
         const exclusions = groupExclusionInput && groupExclusionInput.value ? groupExclusionInput.value.split(',').map(id => id.trim()) : [];
 
@@ -141,6 +144,7 @@ function saveChanges() {
             name: groupNameInput.value,
             config: {
                 active: groupActiveSelect.value === 'true',
+                affiliated: affiliated,
                 inclusion: inclusions,
                 exclusion: exclusions,
                 //TODO: Handle rewrites properly

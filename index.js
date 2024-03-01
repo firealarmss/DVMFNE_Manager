@@ -14,7 +14,6 @@ const TgManagerServer = require('./modules/web/ManagerServer');
 const Logger = require('./modules/Logger');
 const AutoAcl = require('./modules/fne/AutoAcl');
 const DiscordBot = require('./modules/discord/DiscordBot');
-const PeerWatcher = require('./modules/fne/PeerWatcher');
 const DbManager = require("./modules/DbManager");
 const TwilioInboundMessageServer = require('./modules/twilio/TwilioInboundMessageServer');
 const TelegramBot = require('./modules/telegram/TelegramBot');
