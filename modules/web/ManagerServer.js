@@ -189,7 +189,7 @@ class ManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
-                        this.logger.dbug("Force Update FNE request", "MANAGER SERVER");
+                        this.logger.debug("Force Update FNE request", "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -197,7 +197,7 @@ class ManagerServer {
                 })
                 .catch(status => {
                     res.send("error");
-                    this.logger.dbug(status, "MANAGER SERVER");
+                    this.logger.debug(status, "MANAGER SERVER");
                 });
         });
 
@@ -285,15 +285,15 @@ class ManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
-                        this.logger.dbug("Restart FNE request", "MANAGER SERVER");
-                        this.logger.dbug(status, "MANAGER SERVER");
+                        this.logger.debug("Restart FNE request", "MANAGER SERVER");
+                        this.logger.debug(status, "MANAGER SERVER");
                     } else {
                         res.send("Fail");
                     }
                 })
                 .catch(status => {
                     res.send("error");
-                    this.logger.dbug(status, "MANAGER SERVER");
+                    this.logger.debug(status, "MANAGER SERVER");
                 });
         });
 
@@ -304,7 +304,7 @@ class ManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
-                        this.logger.dbug("Start FNE request", "MANAGER SERVER");
+                        this.logger.debug("Start FNE request", "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -323,7 +323,7 @@ class ManagerServer {
                 .then(status => {
                     if (status) {
                         res.send("Success!")
-                        this.logger.dbug("Stop FNE request", "MANAGER SERVER");
+                        this.logger.debug("Stop FNE request", "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");
@@ -342,7 +342,7 @@ class ManagerServer {
                 .then(status => {
                     if (status) {
                         res.send(fneCommunications.commandOutput);
-                        this.logger.dbug("FNE Status: " + fneCommunications.commandOutput, "MANAGER SERVER");
+                        this.logger.debug("FNE Status: " + fneCommunications.commandOutput, "MANAGER SERVER");
                         console.log(status);
                     } else {
                         res.send("Fail");

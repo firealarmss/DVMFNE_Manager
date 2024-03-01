@@ -57,7 +57,7 @@ if (argv.config) {
         let twilioInboundCallServer = new TwilioInboundCallServer(logger, server);
 
         if (config.debug) {
-            logger.dbug("debug server params");
+            logger.debug("debug server params");
             console.log(`Enabled: ${server.Sheets.enabled}\nSheet ID: ${server.Sheets.sheetId}\nSheets JSON File: ${server.Sheets.serviceAccountKeyFile}`)
         }
 

@@ -57,7 +57,7 @@ class PeerWatcher {
 
             if (this.currentPeers && this.io) {
                 this.io.emit("peerListUpdate", this.currentPeers);
-                this.logger.dbug("Sent peer list update to clients", "PEER WATCHER");
+                this.logger.debug("Sent peer list update to clients", "PEER WATCHER");
             }
 
             this.dbManager.getAllPeerInfos((err, peerInfos) => {
@@ -110,7 +110,7 @@ class PeerWatcher {
             if (peer && peerInfo) {
                 newState = peer.connected ? 1 : 0;
                 if (peer.connected) {
-                    this.logger.dbug(`Peer ${peerId} (${peerInfo.name}) is connected.`, "PEER WATCHER");
+                    this.logger.debug(`Peer ${peerId} (${peerInfo.name}) is connected.`, "PEER WATCHER");
                 }
             } else {
                 newState = 0;
@@ -127,7 +127,7 @@ class PeerWatcher {
                 if (err) {
                     this.logger.error(`Error updating connection state for ${peerId}: ${err}`, "PEER WATCHER");
                 } else {
-                    this.logger.dbug(`Updated connection state for ${peerId} to ${newState}`, "PEER WATCHER");
+                    this.logger.debug(`Updated connection state for ${peerId} to ${newState}`, "PEER WATCHER");
                 }
             });
         });

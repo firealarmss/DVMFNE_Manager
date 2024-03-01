@@ -37,7 +37,7 @@ class Mailer {
 
         this.emailClient.send(message);
 
-        this.logger.dbug(`Send email ${subject} and body ${body} to ${email}`, "MAILER");
+        this.logger.debug(`Send email ${subject} and body ${body} to ${email}`, "MAILER");
     }
 }
 

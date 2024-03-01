@@ -11,7 +11,7 @@ const fs = require('fs');
 
 class Logger {
     constructor(debug, systemName, logFile, logLevel) {
-        this.debug = debug;
+        this.debugEnable = debug;
         this.systemName = systemName;
         this.logFile = logFile;
         this.logLevel = logLevel;
@@ -19,8 +19,8 @@ class Logger {
 
     error(message, location = null) {
         const locationPart = location ? `[${location}] ` : '';
-        console.error(`[${this.getDateTime()}] [ERROR] [${this.systemName}] ${locationPart}${message}`);
-        this.writeLogFile(`[${this.getDateTime()}] [ERROR] [${this.systemName}] ${locationPart}${message}`);
+        console.error(`[${this.getDateTime()}] [EROR] [${this.systemName}] ${locationPart}${message}`);
+        this.writeLogFile(`[${this.getDateTime()}] [EROR] [${this.systemName}] ${locationPart}${message}`);
     }
 
     warn(message, location = null) {
@@ -35,11 +35,11 @@ class Logger {
         this.writeLogFile(`[${this.getDateTime()}] [INFO] [${this.systemName}] ${locationPart}${message}`);
     }
 
-    dbug(message, location = null) {
-        if (this.debug) {
+    debug(message, location = null) {
+        if (this.debugEnable) {
             const locationPart = location ? `[${location}] ` : '';
-            console.log(`[${this.getDateTime()}] [DEBUG] [${this.systemName}] ${locationPart}${message}`);
-            this.writeLogFile(`[${this.getDateTime()}] [DEBUG] [${this.systemName}] ${locationPart}${message}`);
+            console.log(`[${this.getDateTime()}] [DBUG] [${this.systemName}] ${locationPart}${message}`);
+            this.writeLogFile(`[${this.getDateTime()}] [DBUG] [${this.systemName}] ${locationPart}${message}`);
         }
     }
 
