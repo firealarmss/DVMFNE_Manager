@@ -12,6 +12,7 @@ const Mailer = require("../socketlabs/Mailer");
 const DiscordWebhook = require("../discord/DiscordWebhook");
 const TwilioVoiceCall = require("../twilio/TwilioVoiceCall");
 const TwilioSmsSender = require("../twilio/TwilioSmsSender");
+const fneConnectionState = require("./fneConnectionState");
 
 // Many parts of this class is temporary until CFNE has a reporter of some sort.
 
@@ -136,6 +137,9 @@ class PeerWatcher {
     async sendAlert(peerInfo, peer, type) {
         if (this.server.Mailer.enabled) {
             if (peer) {
+                //console.log(fneConnectionState)
+                //console.log(fneConnectionState.fneConnectionState[peer.connectionState])
+                //this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) is disconnected with state: ${fneConnectionState.fneConnectionState[peer.connectionState]}`, "PEER WATCHER");
                 this.logger.info(`Peer ${peerInfo.peerId} (${peerInfo.name}) is disconnected with state: ${peer.connectionState}`, "PEER WATCHER");
                 await this.mailer.send(`${this.server.name} DOWN PEER ALERT`, `Peer ${peerInfo.name} is ${type} with state: ${peer.connectionState}`, peerInfo.email);
             } else {

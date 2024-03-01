@@ -115,6 +115,7 @@ function addTalkGroupToUI(newTalkGroup, voiceIndex) {
 function saveChanges() {
     const updatedGroups = groups.groupVoice.map((group, groupIndex) => {
         const groupElem = document.querySelector(`.group[data-group-index="${groupIndex}"]`);
+        let groupAffiliatedSelect;
 
         if (!groupElem) {
             console.error(`Group element not found at index: ${groupIndex}`);
@@ -123,7 +124,14 @@ function saveChanges() {
 
         const groupNameInput = groupElem.querySelector(`#group-name-${groupIndex}`);
         const groupActiveSelect = groupElem.querySelector(`#group-active-${groupIndex}`);
-        const groupAffiliatedSelect = groupElem.querySelector(`#group-affiliated-${groupIndex}`);
+
+        if (groupElem.querySelector(`#group-affiliated-${groupIndex}`)) {
+            groupAffiliatedSelect = groupElem.querySelector(`#group-affiliated-${groupIndex}`);
+        } else {
+            console.error(`Affiliated select not found for group at index: ${groupIndex}`);
+            groupAffiliatedSelect = "false";
+        }
+
         const groupSourceTgidInput = groupElem.querySelector(`#group-source-tgid-${groupIndex}`);
         const groupSourceSlotInput = groupElem.querySelector(`#group-source-slot-${groupIndex}`);
         const groupInclusionInput = groupElem.querySelector(`#group-inclusion-${groupIndex}`);
