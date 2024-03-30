@@ -19,6 +19,7 @@ const FneCommunications = require('../fne/FneCommunications');
 const SheetsCommunications = require('../SheetsCommunications');
 const CsvHandler = require('../fne/CsvHandler');
 const PeerWatcher = require("../fne/PeerWatcher");
+const FneTelegrafServer = require("../telegraf/FneTelegrafServer");
 
 class ManagerServer {
      constructor(server, config, dbManager, logger) {
@@ -75,6 +76,10 @@ class ManagerServer {
         this.app.get('/', (req, res) => {
             res.render('system_landing');
         });
+
+         this.app.get('/callevents', this.isAuthenticated, async (req, res) => {
+             res.render("callevents");
+         });
 
         this.app.get('/manageWatchedPeers', this.isAuthenticated, async (req, res) => {
             try {
@@ -355,6 +360,17 @@ class ManagerServer {
                 });
         });
 
+         this.app.get('/pui/talkgroups', (req, res) => {
+             let tgRulesHandler = new TgRulesHandler(this.RulePath, this.logger);
+
+             tgRulesHandler.read();
+             console.log(tgRulesHandler.rules);
+             res.render('cfne_rules_public', {
+                 rules: tgRulesHandler.rules,
+                 name: this.name
+             });
+         });
+
         this.app.get('/tg_rules', this.isAuthenticated, (req, res) => {
             let tgRulesHandler = new TgRulesHandler(this.RulePath, this.logger);
 
@@ -518,6 +534,13 @@ class ManagerServer {
         this.io = new Server(httpServer, {});
 
         require('./SocketHandler')(this.io);
+
+        if (this.server.influx && this.server.influx.telegraf && this.server.influx.telegraf.enabled) {
+            this.logger.info("Telegraf enabled", "MANAGER SERVER");
+            this.fneTelegrafServer = new FneTelegrafServer(this.server.influx.telegraf.port, this.server.influx.telegraf.bindAddress, this.io, this.server.influx.debug, this.logger);
+
+            this.fneTelegrafServer.start();
+        }
 
         this.initializedApp = httpServer.listen(this.port, this.serverBindAddress, () => {
             this.logger.info(`${this.name} TG Manager Server started on port ${this.port}`, "MANAGER SERVER");

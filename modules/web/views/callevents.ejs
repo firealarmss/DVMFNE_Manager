@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call Events</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Call Events</h2>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">DstId</th>
+            <th scope="col">SrcId</th>
+            <th scope="col">Mode</th>
+            <th scope="col">PeerId</th>
+            <th scope="col">StreamId</th>
+            <th scope="col">Duration (s)</th>
+        </tr>
+        </thead>
+        <tbody id="callEventsTableBody">
+        </tbody>
+    </table>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    socket.on('callEvent', function(metric) {
+        const tableBody = document.getElementById('callEventsTableBody');
+        const row = tableBody.insertRow(0);
+
+        const cellDstId = row.insertCell(0);
+        const cellSrcId = row.insertCell(1);
+        const cellMode = row.insertCell(2);
+        const cellPeerId = row.insertCell(3);
+        const cellStreamId = row.insertCell(4);
+        const cellDuration = row.insertCell(5);
+
+        cellDstId.innerHTML = metric.tags.dstId;
+        cellSrcId.innerHTML = metric.tags.srcId;
+        cellMode.innerHTML = metric.tags.mode;
+        cellPeerId.innerHTML = metric.tags.peerId;
+        cellStreamId.innerHTML = metric.tags.streamId;
+        cellDuration.innerHTML = (metric.fields.duration / 1000).toFixed(2);
+    });
+
+</script>
+</body>
+</html>

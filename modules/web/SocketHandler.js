@@ -9,10 +9,10 @@
 
 module.exports = function(io) {
     io.on('connection', (socket) => {
-        console.log('user connected');
+        //console.log('user connected');
 
         socket.on('disconnect', () => {
-            console.log('User disconnected');
+            //console.log('User disconnected');
         });
     });
 };
