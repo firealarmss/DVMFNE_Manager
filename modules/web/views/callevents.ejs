@@ -30,6 +30,13 @@
     const socket = io();
 
     socket.on('callEvent', function(metric) {
+        const durationInSeconds = metric.fields.duration / 1000;
+
+        if (durationInSeconds < 0.5) {
+            console.warn('Call duration is less than 0.5 seconds, ignoring', metric);
+            return;
+        }
+
         const tableBody = document.getElementById('callEventsTableBody');
         const row = tableBody.insertRow(0);
 
@@ -45,7 +52,7 @@
         cellMode.innerHTML = metric.tags.mode;
         cellPeerId.innerHTML = metric.tags.peerId;
         cellStreamId.innerHTML = metric.tags.streamId;
-        cellDuration.innerHTML = (metric.fields.duration / 1000).toFixed(2);
+        cellDuration.innerHTML = durationInSeconds.toFixed(2);
     });
 
 </script>
