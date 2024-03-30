@@ -77,7 +77,7 @@ class ManagerServer {
             res.render('system_landing');
         });
 
-         this.app.get('/callevents', this.isAuthenticated, async (req, res) => {
+         this.app.get('/callevents', async (req, res) => {
              res.render("callevents");
          });
 
