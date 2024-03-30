@@ -11,6 +11,20 @@ servers:
     serverPort: 3001
     serverBindAddress: 0.0.0.0
 
+    influx:
+      debug: false
+      db: # Not implemented yet
+        enabled: false
+        host: "127.0.0.1"
+        port: 8086
+        org: "dvm"
+        bucket: "dvm"
+
+      telegraf: # Server to listen for telegraf metrics
+        enabled: false
+        bindAddress: "0.0.0.0"
+        port: 3000
+
     Rest:
       address: "127.0.0.1"
       port: 9990
