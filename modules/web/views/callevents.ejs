@@ -31,21 +31,16 @@
 
     socket.on('callEvent', function(metric) {
         const durationInSeconds = metric.fields.duration / 1000;
-        const dstId = metric.fields.dstId;
-        const srcId = metric.fields.srcId;
+        const dstId = Number(metric.tags.dstId);
+        const srcId = Number(metric.tags.srcId);
 
         if (durationInSeconds < 0.5) {
             console.warn('Call duration is less than 0.5 seconds, ignoring', metric);
             return;
         }
 
-        if (!dstId || !srcId) {
-            console.warn('srcId or dstId is undefined or null, ignoring', metric);
-            return;
-        }
-
-        if (dstId === 0 || srcId === 0) {
-            console.warn('srcId or dstId cannot be 0, ignoring', metric);
+        if (isNaN(dstId) || isNaN(srcId) || dstId === 0 || srcId === 0) {
+            console.warn('srcId or dstId is invalid, ignoring', metric);
             return;
         }
 
