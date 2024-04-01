@@ -31,11 +31,16 @@
 
     socket.on('callEvent', function(metric) {
         const durationInSeconds = metric.fields.duration / 1000;
-        const dstId = parseInt(metric.fields.dstId);
-        const srcId = parseInt(metric.fields.srcId);
+        const dstId = metric.fields.dstId;
+        const srcId = metric.fields.srcId;
 
         if (durationInSeconds < 0.5) {
             console.warn('Call duration is less than 0.5 seconds, ignoring', metric);
+            return;
+        }
+
+        if (!dstId || !srcId) {
+            console.warn('srcId or dstId is undefined or null, ignoring', metric);
             return;
         }
 
