@@ -31,9 +31,16 @@
 
     socket.on('callEvent', function(metric) {
         const durationInSeconds = metric.fields.duration / 1000;
+        const dstId = parseInt(metric.fields.dstId);
+        const srcId = parseInt(metric.fields.srcId);
 
         if (durationInSeconds < 0.5) {
             console.warn('Call duration is less than 0.5 seconds, ignoring', metric);
+            return;
+        }
+
+        if (dstId === 0 || srcId === 0) {
+            console.warn('srcId or dstId cannot be 0, ignoring', metric);
             return;
         }
 
@@ -47,8 +54,8 @@
         const cellStreamId = row.insertCell(4);
         const cellDuration = row.insertCell(5);
 
-        cellDstId.innerHTML = metric.tags.dstId;
-        cellSrcId.innerHTML = metric.tags.srcId;
+        cellDstId.innerHTML = dstId.toString();
+        cellSrcId.innerHTML = srcId.toString();
         cellMode.innerHTML = metric.tags.mode;
         cellPeerId.innerHTML = metric.tags.peerId;
         cellStreamId.innerHTML = metric.tags.streamId;
